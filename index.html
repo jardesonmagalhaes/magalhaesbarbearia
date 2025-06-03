@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda do Cabeleireiro</title>
+  <link rel="icon" href="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" />
+  <style>
+    :root {
+      --cor-principal: #1e88e5;
+      --cor-secundaria: #f0f2f5;
+      --cor-texto: #333;
+      --cor-branco: #fff;
+      --cor-destaque: #0d47a1;
+      --cor-agendamento: #e3f2fd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--cor-secundaria);
+      margin: 0;
+      padding: 0;
+      color: var(--cor-texto);
+    }
+
+    header {
+      background-color: var(--cor-principal);
+      color: var(--cor-branco);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    header img {
+      height: 60px;
+      border-radius: 10px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      text-align: center;
+    }
+
+    form {
+      background-color: var(--cor-branco);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 700px;
+      width: 90%;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    form input,
+    form select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button[type="submit"] {
+      background-color: var(--cor-destaque);
+      color: var(--cor-branco);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #08306b;
+    }
+
+    .dias-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .dia {
+      background-color: var(--cor-branco);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .dia h3 {
+      margin-top: 0;
+      text-align: center;
+      color: var(--cor-principal);
+    }
+
+    .agendamento {
+      background-color: var(--cor-agendamento);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .agendamento strong {
+      color: var(--cor-destaque);
+    }
+
+    .agendamento-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .agendamento button {
+      background-color: var(--cor-principal);
+      color: var(--cor-branco);
+      border: none;
+      border-radius: 6px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .agendamento button:hover {
+      background-color: var(--cor-destaque);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" alt="Logo">
+    <h1>Agenda do Cabeleireiro</h1>
+  </header>
+
+  <form id="form-agendamento">
+    <label for="dia">Dia da semana:</label>
+    <select id="dia">
+      <option value="segunda">Segunda</option>
+      <option value="terca">Terça</option>
+      <option value="quarta">Quarta</option>
+      <option value="quinta">Quinta</option>
+      <option value="sexta">Sexta</option>
+      <option value="sabado">Sábado</option>
+    </select>
+
+    <label for="horario">Horário:</label>
+    <input type="time" id="horario" required />
+
+    <label for="cliente">Nome do cliente:</label>
+    <input type="text" id="cliente" required />
+
+    <label for="servico">Serviço:</label>
+    <select id="servico" required>
+      <option value="Cabelo masculino social">Cabelo masculino social</option>
+      <option value="Cabelo masculino degradê">Cabelo masculino degradê</option>
+      <option value="Cabelo Feminino">Cabelo Feminino</option>
+      <option value="Cabelo + Barba">Cabelo + Barba</option>
+      <option value="Cabelo + sombrancelha">Cabelo + sombrancelha</option>
+      <option value="Somente Barba">Somente Barba</option>
+    </select>
+
+    <input type="hidden" id="index-edicao" value="">
+    <button type="submit">Salvar Agendamento</button>
+  </form>
+
+  <div class="dias-container" id="dias"></div>
+
+  <script>
+    const diasDaSemana = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
+
+    function carregarAgendamentos() {
+      const diasContainer = document.getElementById('dias');
+      diasContainer.innerHTML = '';
+
+      diasDaSemana.forEach(dia => {
+        let agendamentos = JSON.parse(localStorage.getItem(dia)) || [];
+        agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
+        localStorage.setItem(dia, JSON.stringify(agendamentos));
+
+        const diaDiv = document.createElement('div');
+        diaDiv.className = 'dia';
+        diaDiv.innerHTML = `<h3>${capitalize(dia)}</h3>`;
+
+        agendamentos.forEach((item, index) => {
+          const agendamentoDiv = document.createElement('div');
+          agendamentoDiv.className = 'agendamento';
+          agendamentoDiv.innerHTML = `
+            <div><strong>${item.horario}</strong> - ${item.cliente} (${item.servico})</div>
+            <div class="agendamento-buttons">
+              <button onclick="confirmarEdicao('${dia}', ${index})">Editar</button>
+              <button onclick="confirmarRemocao('${dia}', ${index})">Remover</button>
+            </div>
+          `;
+          diaDiv.appendChild(agendamentoDiv);
+        });
+
+        diasContainer.appendChild(diaDiv);
+      });
+    }
+
+    function confirmarRemocao(dia, index) {
+      if (confirm("Tem certeza que deseja remover este agendamento?")) {
+        removerAgendamento(dia, index);
+      }
+    }
+
+    function confirmarEdicao(dia, index) {
+      if (confirm("Deseja editar este agendamento?")) {
+        editarAgendamento(dia, index);
+      }
+    }
+
+    function removerAgendamento(dia, index) {
+      const agendamentos = JSON.parse(localStorage.getItem(dia)) || [];
+      agendamentos.splice(index, 1);
+      localStorage.setItem(dia, JSON.stringify(agendamentos));
+      carregarAgendamentos();
+    }
+
+    function editarAgendamento(dia, index) {
+      const agendamentos = JSON.parse(localStorage.getItem(dia));
+      const item = agendamentos[index];
+
+      document.getElementById('dia').value = dia;
+      document.getElementById('horario').value = item.horario;
+      document.getElementById('cliente').value = item.cliente;
+      document.getElementById('servico').value = item.servico;
+      document.getElementById('index-edicao').value = `${dia}-${index}`;
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    document.getElementById('form-agendamento').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const dia = document.getElementById('dia').value;
+      const horario = document.getElementById('horario').value;
+      const cliente = document.getElementById('cliente').value;
+      const servico = document.getElementById('servico').value;
+      const indexEdicao = document.getElementById('index-edicao').value;
+
+      let agendamentos = JSON.parse(localStorage.getItem(dia)) || [];
+
+      if (indexEdicao) {
+        const [d, i] = indexEdicao.split('-');
+        if (d !== dia) {
+          let antigos = JSON.parse(localStorage.getItem(d)) || [];
+          antigos.splice(i, 1);
+          localStorage.setItem(d, JSON.stringify(antigos));
+          agendamentos.push({ horario, cliente, servico });
+        } else {
+          agendamentos[i] = { horario, cliente, servico };
+        }
+        document.getElementById('index-edicao').value = '';
+      } else {
+        agendamentos.push({ horario, cliente, servico });
+      }
+
+      agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
+      localStorage.setItem(dia, JSON.stringify(agendamentos));
+      this.reset();
+      carregarAgendamentos();
+    });
+
+    carregarAgendamentos();
+  </script>
+</body>
+</html>
