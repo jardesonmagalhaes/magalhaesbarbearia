@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Magalhães Barbearia ©</title>
+  <title>Agenda do Cabeleireiro</title>
   <link rel="icon" href="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --cor-principal: #1e88e5;
@@ -37,6 +38,7 @@
       gap: 1rem;
       flex-wrap: wrap;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
     }
 
     header img {
@@ -75,7 +77,7 @@
       font-size: 1rem;
     }
 
-    button[type="submit"] {
+    button[type="submit"], .botao-gerar-imagem {
       background-color: var(--cor-destaque);
       color: var(--cor-branco);
       padding: 0.75rem 1.5rem;
@@ -84,9 +86,10 @@
       font-size: 1rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      margin-top: 1rem;
     }
 
-    button[type="submit"]:hover {
+    button[type="submit"]:hover, .botao-gerar-imagem:hover {
       background-color: #08306b;
     }
 
@@ -145,12 +148,20 @@
     .agendamento button:hover {
       background-color: var(--cor-destaque);
     }
+
+    .container-botoes {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-bottom: 2rem;
+    }
   </style>
 </head>
 <body>
-  <header>
+  <header onclick="location.reload()">
     <img src="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" alt="Logo">
-    <h1>Magalhães Barbearia ©</h1>
+    <h1>Agenda do Cabeleireiro</h1>
   </header>
 
   <form id="form-agendamento">
@@ -162,6 +173,7 @@
       <option value="quinta">Quinta</option>
       <option value="sexta">Sexta</option>
       <option value="sabado">Sábado</option>
+      <option value="domingo">Domingo</option>
     </select>
 
     <label for="horario">Horário:</label>
@@ -171,14 +183,7 @@
     <input type="text" id="cliente" required />
 
     <label for="servico">Serviço:</label>
-    <select id="servico" required>
-      <option value="Cabelo masculino social">Cabelo masculino social</option>
-      <option value="Cabelo masculino degradê">Cabelo masculino degradê</option>
-      <option value="Cabelo Feminino">Cabelo Feminino</option>
-      <option value="Cabelo + Barba">Cabelo + Barba</option>
-      <option value="Cabelo + sombrancelha">Cabelo + sombrancelha</option>
-      <option value="Somente Barba">Somente Barba</option>
-    </select>
+    <input type="text" id="servico" required />
 
     <input type="hidden" id="index-edicao" value="">
     <button type="submit">Salvar Agendamento</button>
@@ -186,8 +191,12 @@
 
   <div class="dias-container" id="dias"></div>
 
+  <div class="container-botoes">
+    <button class="botao-gerar-imagem" onclick="gerarImagem()">Gerar imagem dos agendamentos (PNG)</button>
+  </div>
+
   <script>
-    const diasDaSemana = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
+    const diasDaSemana = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
 
     function carregarAgendamentos() {
       const diasContainer = document.getElementById('dias');
@@ -208,8 +217,8 @@
           agendamentoDiv.innerHTML = `
             <div><strong>${item.horario}</strong> - ${item.cliente} (${item.servico})</div>
             <div class="agendamento-buttons">
-              <button onclick="confirmarEdicao('${dia}', ${index})">Editar</button>
-              <button onclick="confirmarRemocao('${dia}', ${index})">Remover</button>
+              <button onclick="editarAgendamento('${dia}', ${index})">Editar</button>
+              <button onclick="removerAgendamento('${dia}', ${index})">Remover</button>
             </div>
           `;
           diaDiv.appendChild(agendamentoDiv);
@@ -219,19 +228,8 @@
       });
     }
 
-    function confirmarRemocao(dia, index) {
-      if (confirm("Tem certeza que deseja remover este agendamento?")) {
-        removerAgendamento(dia, index);
-      }
-    }
-
-    function confirmarEdicao(dia, index) {
-      if (confirm("Deseja editar este agendamento?")) {
-        editarAgendamento(dia, index);
-      }
-    }
-
     function removerAgendamento(dia, index) {
+      if (!confirm('Tem certeza que deseja remover este agendamento?')) return;
       const agendamentos = JSON.parse(localStorage.getItem(dia)) || [];
       agendamentos.splice(index, 1);
       localStorage.setItem(dia, JSON.stringify(agendamentos));
@@ -239,6 +237,7 @@
     }
 
     function editarAgendamento(dia, index) {
+      if (!confirm('Deseja editar este agendamento?')) return;
       const agendamentos = JSON.parse(localStorage.getItem(dia));
       const item = agendamentos[index];
 
@@ -251,6 +250,16 @@
 
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function gerarImagem() {
+      const container = document.getElementById('dias');
+      html2canvas(container).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'agenda-cabeleireiro.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
     }
 
     document.getElementById('form-agendamento').addEventListener('submit', function (e) {
