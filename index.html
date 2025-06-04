@@ -1,299 +1,998 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda do Cabeleireiro</title>
-  <link rel="icon" href="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <style>
-    :root {
-      --cor-principal: #1e88e5;
-      --cor-secundaria: #f0f2f5;
-      --cor-texto: #333;
-      --cor-branco: #fff;
-      --cor-destaque: #0d47a1;
-      --cor-agendamento: #e3f2fd;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magalhães Barbearia | Agenda Profissional</title>
+    <link rel="icon" href="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Base Colors */
+            --dark-primary: #1a202c; /* Deep charcoal for main elements */
+            --light-primary: #2d3748; /* Slightly lighter charcoal for secondary elements */
+            --accent-gold: #e2b34c; /* Rich gold for highlights */
+            --text-light: #f7fafc; /* Off-white for text on dark backgrounds */
+            --text-dark: #2d3748; /* Dark grey for text on light backgrounds */
+            --background-light: #edf2f7; /* Very light grey for main background */
+            --card-background: #ffffff; /* Pure white for cards */
 
-    * {
-      box-sizing: border-box;
-    }
+            /* Specific Elements */
+            --form-border: #cbd5e0; /* Light grey for form input borders */
+            --button-hover-dark: #12161e; /* Darker hover for primary buttons */
+            --button-hover-gold: #c29532; /* Darker hover for gold buttons */
+            --remove-red: #ef4444; /* Brighter red for delete */
+            --remove-red-hover: #dc2626; /* Darker red on hover */
+            --success-green: #10b981; /* Green for success messages */
+            --error-red: #ef4444; /* Red for error messages */
+            --info-blue: #3b82f6; /* Blue for info messages */
+            --divider-color: #e2e8f0; /* Soft divider color */
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--cor-secundaria);
-      margin: 0;
-      padding: 0;
-      color: var(--cor-texto);
-    }
+            /* Spacing & Sizes */
+            --spacing-xs: 0.5rem;
+            --spacing-s: 1rem;
+            --spacing-m: 1.5rem;
+            --spacing-l: 2rem;
+            --spacing-xl: 3rem;
 
-    header {
-      background-color: var(--cor-principal);
-      color: var(--cor-branco);
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-    }
+            /* Shadows */
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
-    header img {
-      height: 60px;
-      border-radius: 10px;
-    }
+            /* Transitions */
+            --transition-ease: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    h1 {
-      font-size: 1.8rem;
-      text-align: center;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    form {
-      background-color: var(--cor-branco);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin: 2rem auto;
-      padding: 2rem;
-      border-radius: 12px;
-      max-width: 700px;
-      width: 90%;
-    }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    form label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-    }
+        header {
+            background-color: var(--dark-primary);
+            color: var(--text-light);
+            padding: var(--spacing-l) var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-m);
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            border-bottom: 5px solid var(--accent-gold); /* Accent line */
+            position: relative;
+            top: 0;
+            z-index: 1000;
+        }
 
-    form input,
-    form select {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1.25rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
+        header img {
+            height: 80px; /* Larger logo */
+            width: 80px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-gold);
+            object-fit: cover;
+        }
 
-    button[type="submit"], .botao-gerar-imagem {
-      background-color: var(--cor-destaque);
-      color: var(--cor-branco);
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 1rem;
-    }
+        h1 {
+            font-family: 'Oswald', sans-serif; /* Stronger font for title */
+            font-size: 2.8rem; /* Larger title */
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+            letter-spacing: 0.1em; /* More distinct spacing */
+            text-transform: uppercase;
+        }
 
-    button[type="submit"]:hover, .botao-gerar-imagem:hover {
-      background-color: #08306b;
-    }
+        main {
+            flex-grow: 1;
+            padding: var(--spacing-xl);
+            max-width: 1600px; /* Wider content area */
+            margin: var(--spacing-xl) auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-l);
+        }
 
-    .dias-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
-    }
+        form {
+            background-color: var(--card-background);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            max-width: 700px; /* Ample space for form */
+            width: 100%;
+            margin: 0 auto;
+            border: 1px solid var(--form-border);
+        }
 
-    .dia {
-      background-color: var(--cor-branco);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+        form label {
+            display: block;
+            margin-bottom: var(--spacing-s);
+            font-weight: 600;
+            color: var(--light-primary);
+            font-size: 1.05rem;
+        }
 
-    .dia h3 {
-      margin-top: 0;
-      text-align: center;
-      color: var(--cor-principal);
-    }
+        form input,
+        form select {
+            width: 100%;
+            padding: var(--spacing-s) var(--spacing-m);
+            margin-bottom: var(--spacing-l);
+            border: 1px solid var(--form-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            transition: var(--transition-ease);
+        }
 
-    .agendamento {
-      background-color: var(--cor-agendamento);
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 0.5rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+        form input:focus,
+        form select:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(226, 179, 76, 0.3);
+            outline: none;
+            background-color: var(--card-background);
+        }
 
-    .agendamento strong {
-      color: var(--cor-destaque);
-    }
+        .btn-primary,
+        .btn-secondary {
+            padding: var(--spacing-s) var(--spacing-l);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: var(--transition-ease);
+            box-shadow: var(--shadow-sm);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+        }
 
-    .agendamento-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
+        .btn-primary {
+            background-color: var(--dark-primary);
+            color: var(--text-light);
+        }
 
-    .agendamento button {
-      background-color: var(--cor-principal);
-      color: var(--cor-branco);
-      border: none;
-      border-radius: 6px;
-      padding: 0.4rem 0.8rem;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: background-color 0.2s ease;
-    }
+        .btn-primary:hover {
+            background-color: var(--button-hover-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
 
-    .agendamento button:hover {
-      background-color: var(--cor-destaque);
-    }
+        .btn-secondary {
+            background-color: var(--accent-gold);
+            color: var(--dark-primary); /* Text on gold should be dark */
+        }
 
-    .container-botoes {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding-bottom: 2rem;
-    }
-  </style>
+        .btn-secondary:hover {
+            background-color: var(--button-hover-gold);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        button[type="submit"] {
+            width: 100%; /* Full width submit button */
+            margin-top: var(--spacing-s);
+        }
+
+        .navegacao-semanal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-m);
+            margin-bottom: var(--spacing-l);
+            flex-wrap: wrap;
+            background-color: var(--light-primary);
+            padding: var(--spacing-s) var(--spacing-m);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .navegacao-semanal .btn-secondary {
+            background-color: var(--accent-gold); /* Gold for navigation buttons */
+            color: var(--dark-primary);
+            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0;
+        }
+
+        .navegacao-semanal .btn-secondary:hover {
+            background-color: var(--button-hover-gold);
+        }
+
+        .navegacao-semanal span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-align: center;
+            flex-grow: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dias-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Slightly wider cards */
+            gap: var(--spacing-l);
+            padding-bottom: var(--spacing-l);
+        }
+
+        .dia {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: var(--spacing-l);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            min-height: 280px; /* Ensures consistent card height */
+            border: 1px solid var(--form-border);
+            transition: var(--transition-ease);
+        }
+
+        .dia:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dia h3 {
+            text-align: center;
+            color: var(--dark-primary);
+            font-size: 1.8rem;
+            font-family: 'Oswald', sans-serif;
+            border-bottom: 3px solid var(--accent-gold);
+            padding-bottom: var(--spacing-s);
+            margin-bottom: var(--spacing-m);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .agendamento-list {
+            flex-grow: 1;
+            overflow-y: auto; /* Enable scrolling for many appointments */
+            padding-right: 5px; /* Space for scrollbar */
+        }
+        .agendamento-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .agendamento-list::-webkit-scrollbar-track {
+            background: var(--background-light);
+            border-radius: 10px;
+        }
+        .agendamento-list::-webkit-scrollbar-thumb {
+            background: var(--accent-gold);
+            border-radius: 10px;
+        }
+        .agendamento-list::-webkit-scrollbar-thumb:hover {
+            background: var(--button-hover-gold);
+        }
+
+
+        .agendamento {
+            background-color: var(--background-light);
+            padding: var(--spacing-s) var(--spacing-m);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-s);
+            border-left: 6px solid var(--dark-primary); /* Stronger highlight */
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            transition: var(--transition-ease);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .agendamento:last-child {
+            margin-bottom: 0;
+        }
+
+        .agendamento:hover {
+            transform: translateX(5px); /* Slight shift on hover */
+            box-shadow: var(--shadow-md);
+            border-left-color: var(--accent-gold); /* Gold border on hover */
+        }
+
+        .agendamento strong {
+            color: var(--dark-primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .agendamento-details {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .agendamento-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-s);
+            margin-top: var(--spacing-s);
+        }
+
+        .agendamento-buttons button {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition-ease);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .agendamento-buttons button:first-child { /* Edit */
+            background-color: var(--dark-primary);
+            color: var(--text-light);
+        }
+
+        .agendamento-buttons button:first-child:hover {
+            background-color: var(--button-hover-dark);
+            transform: translateY(-1px);
+        }
+
+        .agendamento-buttons button:last-child { /* Remove */
+            background-color: var(--remove-red);
+            color: var(--text-light);
+        }
+
+        .agendamento-buttons button:last-child:hover {
+            background-color: var(--remove-red-hover);
+            transform: translateY(-1px);
+        }
+
+        .divisor-horario {
+            border-top: 2px dashed var(--divider-color);
+            margin: var(--spacing-l) 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .divisor-horario::before {
+            content: "Almoço";
+            background-color: var(--card-background);
+            color: var(--divider-color);
+            padding: 0 var(--spacing-s);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .container-botoes {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-m);
+            padding-top: var(--spacing-m);
+            padding-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+
+        .message-container {
+            padding: var(--spacing-s) var(--spacing-m);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-l);
+            font-weight: 600;
+            text-align: center;
+            border-left: 6px solid;
+            display: none; /* Hidden by default */
+            box-shadow: var(--shadow-sm);
+        }
+        .message-container.success {
+            background-color: #d1fae5; /* Green light background */
+            color: var(--success-green);
+            border-color: var(--success-green);
+        }
+        .message-container.error {
+            background-color: #fee2e2; /* Red light background */
+            color: var(--error-red);
+            border-color: var(--error-red);
+        }
+        .message-container.info {
+            background-color: #eff6ff; /* Blue light background */
+            color: var(--info-blue);
+            border-color: var(--info-blue);
+        }
+
+        .no-appointments {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            padding: var(--spacing-m) 0;
+            font-size: 1rem;
+        }
+
+        /* SVG icon styling */
+        .feather {
+            width: 1.2em;
+            height: 1.2em;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+        .btn-secondary .feather {
+            color: var(--dark-primary); /* Make icons dark on gold background */
+        }
+
+        @media (max-width: 1200px) {
+            main {
+                padding: var(--spacing-l);
+            }
+            .dias-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: var(--spacing-m);
+            }
+            .dia {
+                padding: var(--spacing-m);
+            }
+            .dia h3 {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: var(--spacing-m) var(--spacing-s);
+            }
+            h1 {
+                font-size: 2.2rem;
+                letter-spacing: 0.08em;
+            }
+            header img {
+                height: 60px;
+                width: 60px;
+            }
+            main {
+                padding: var(--spacing-m);
+                gap: var(--spacing-m);
+            }
+            form {
+                padding: var(--spacing-m);
+            }
+            form label {
+                margin-bottom: var(--spacing-xs);
+            }
+            form input,
+            form select {
+                margin-bottom: var(--spacing-m);
+            }
+            .btn-primary, .btn-secondary {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            .navegacao-semanal {
+                flex-direction: column;
+                gap: var(--spacing-s);
+                padding: var(--spacing-s);
+            }
+            .navegacao-semanal span {
+                font-size: 1.2rem;
+            }
+            .dias-container {
+                gap: var(--spacing-s);
+            }
+            .dia {
+                padding: var(--spacing-m) var(--spacing-s);
+                min-height: 220px;
+            }
+            .dia h3 {
+                font-size: 1.4rem;
+                margin-bottom: var(--spacing-s);
+            }
+            .agendamento {
+                padding: var(--spacing-xs) var(--spacing-s);
+                font-size: 0.9rem;
+            }
+            .agendamento strong {
+                font-size: 1rem;
+            }
+            .agendamento-buttons button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .divisor-horario {
+                margin: var(--spacing-m) 0;
+            }
+        }
+
+        /* Added for very small screens (mobile) */
+        @media (max-width: 480px) {
+            header {
+                padding: var(--spacing-s);
+            }
+            h1 {
+                font-size: 1.8rem;
+                letter-spacing: 0.05em;
+            }
+            header img {
+                height: 50px;
+                width: 50px;
+            }
+            main {
+                padding: var(--spacing-s);
+                gap: var(--spacing-s);
+            }
+            form {
+                padding: var(--spacing-s);
+            }
+            form label {
+                font-size: 1rem;
+            }
+            form input,
+            form select {
+                padding: var(--spacing-xs) var(--spacing-s);
+                margin-bottom: var(--spacing-m);
+                font-size: 0.9rem;
+            }
+            .btn-primary, .btn-secondary {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            .navegacao-semanal {
+                padding: var(--spacing-xs);
+                gap: var(--spacing-xs);
+            }
+            .navegacao-semanal span {
+                font-size: 1rem;
+                padding: 0 var(--spacing-xs);
+            }
+            .navegacao-semanal .btn-secondary {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            .dias-container {
+                grid-template-columns: 1fr; /* Stack cards on very small screens */
+                gap: var(--spacing-s);
+            }
+            .dia {
+                padding: var(--spacing-s);
+                min-height: auto; /* Allow height to adjust based on content */
+            }
+            .dia h3 {
+                font-size: 1.2rem;
+                margin-bottom: var(--spacing-s);
+            }
+            .agendamento {
+                padding: var(--spacing-xs);
+                font-size: 0.85rem;
+            }
+            .agendamento strong {
+                font-size: 0.9rem;
+            }
+            .agendamento-buttons {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: var(--spacing-xs);
+            }
+            .agendamento-buttons button {
+                width: 100%;
+            }
+            .divisor-horario {
+                margin: var(--spacing-s) 0;
+            }
+            .divisor-horario::before {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background-color: #fff;
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            header, .container-botoes, .agendamento-buttons, .navegacao-semanal, form, .message-container {
+                display: none;
+            }
+            main {
+                padding: 0;
+                margin: 0;
+                max-width: none;
+                width: 100%;
+            }
+            .dias-container {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for print */
+                gap: var(--spacing-m);
+                padding: var(--spacing-m);
+            }
+            .dia {
+                box-shadow: none;
+                border: 1px solid var(--form-border);
+                padding: var(--spacing-m);
+                page-break-inside: avoid;
+                min-height: auto;
+            }
+            .dia h3 {
+                font-size: 1.5rem;
+                padding-bottom: var(--spacing-xs);
+                margin-bottom: var(--spacing-s);
+                border-bottom: 2px solid var(--accent-gold);
+            }
+            .agendamento {
+                border-left: 5px solid var(--dark-primary);
+                padding: var(--spacing-xs) var(--spacing-s);
+                font-size: 0.95rem;
+                margin: 0.5rem 0;
+                box-shadow: none;
+            }
+            .agendamento:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            .divisor-horario {
+                margin: var(--spacing-m) 0;
+            }
+            .no-appointments {
+                color: #bbb;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header onclick="location.reload()">
-    <img src="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" alt="Logo">
-    <h1>Agenda do Cabeleireiro</h1>
-  </header>
+    <header onclick="location.reload()">
+        <img src="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" alt="Logo Magalhães Barbearia" crossorigin="anonymous">
+        <h1>Magalhães Barbearia</h1>
+    </header>
 
-  <form id="form-agendamento">
-    <label for="dia">Dia da semana:</label>
-    <select id="dia">
-      <option value="segunda">Segunda</option>
-      <option value="terca">Terça</option>
-      <option value="quarta">Quarta</option>
-      <option value="quinta">Quinta</option>
-      <option value="sexta">Sexta</option>
-      <option value="sabado">Sábado</option>
-      <option value="domingo">Domingo</option>
-    </select>
+    <main>
+        <form id="form-agendamento">
+            <div class="message-container" id="message-container"></div>
 
-    <label for="horario">Horário:</label>
-    <input type="time" id="horario" required />
+            <label for="data">Data do agendamento:</label>
+            <input type="date" id="data" required />
 
-    <label for="cliente">Nome do cliente:</label>
-    <input type="text" id="cliente" required />
+            <label for="horario">Horário:</label>
+            <input type="time" id="horario" required />
 
-    <label for="servico">Serviço:</label>
-    <input type="text" id="servico" required />
+            <label for="cliente">Nome do cliente:</label>
+            <input type="text" id="cliente" required />
 
-    <input type="hidden" id="index-edicao" value="">
-    <button type="submit">Salvar Agendamento</button>
-  </form>
+            <label for="servico">Serviço:</label>
+            <select id="servico" required>
+                <option value="">Selecione um serviço</option>
+                <option value="Cabelo degradê">Cabelo degradê</option>
+                <option value="Cabelo social">Cabelo social</option>
+                <option value="Cabelo feminino">Cabelo feminino</option>
+                <option value="Cabelo + barba">Cabelo + barba</option>
+                <option value="Barba">Barba</option>
+                <option value="Cabelo + luzes">Cabelo + luzes</option>
+            </select>
 
-  <div class="dias-container" id="dias"></div>
+            <input type="hidden" id="index-edicao" value="">
+            <button type="submit" class="btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-save"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Salvar Agendamento
+            </button>
+        </form>
 
-  <div class="container-botoes">
-    <button class="botao-gerar-imagem" onclick="gerarImagem()">Gerar imagem dos agendamentos (PNG)</button>
-  </div>
+        <div class="navegacao-semanal">
+            <button class="btn-secondary" onclick="mudarSemana(-1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Anterior
+            </button>
+            <span id="semana-atual"></span>
+            <button class="btn-secondary" onclick="mudarSemana(1)">
+                Próxima
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </div>
 
-  <script>
-    const diasDaSemana = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+        <div class="dias-container" id="dias"></div>
 
-    function carregarAgendamentos() {
-      const diasContainer = document.getElementById('dias');
-      diasContainer.innerHTML = '';
+        <div class="container-botoes">
+            <button class="btn-primary" onclick="gerarImagem()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                Exportar Agenda (PNG)
+            </button>
+        </div>
+    </main>
 
-      diasDaSemana.forEach(dia => {
-        let agendamentos = JSON.parse(localStorage.getItem(dia)) || [];
-        agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
-        localStorage.setItem(dia, JSON.stringify(agendamentos));
+    <script>
+        let dataAtual = new Date(); // Stores the current week's starting date
 
-        const diaDiv = document.createElement('div');
-        diaDiv.className = 'dia';
-        diaDiv.innerHTML = `<h3>${capitalize(dia)}</h3>`;
+        // Utility function to display messages
+        function showMessage(message, type = 'info') { // type can be 'success', 'error', 'info'
+            const msgContainer = document.getElementById('message-container');
+            msgContainer.textContent = message;
+            msgContainer.className = `message-container ${type}`; // Add type class
+            msgContainer.style.display = 'block';
 
-        agendamentos.forEach((item, index) => {
-          const agendamentoDiv = document.createElement('div');
-          agendamentoDiv.className = 'agendamento';
-          agendamentoDiv.innerHTML = `
-            <div><strong>${item.horario}</strong> - ${item.cliente} (${item.servico})</div>
-            <div class="agendamento-buttons">
-              <button onclick="editarAgendamento('${dia}', ${index})">Editar</button>
-              <button onclick="removerAgendamento('${dia}', ${index})">Remover</button>
-            </div>
-          `;
-          diaDiv.appendChild(agendamentoDiv);
+            setTimeout(() => {
+                msgContainer.style.display = 'none';
+                msgContainer.className = 'message-container'; // Clear classes
+            }, 5000); // Hide after 5 seconds
+        }
+
+        // Function to get the start of the week (Monday) for a given date
+        function getStartOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+            // Calculate the difference to get to Monday (getDay() returns 0 for Sunday, we want it to be -6 relative to Mon)
+            const diff = d.getDate() - (day === 0 ? 6 : day - 1); // If Sunday (0), go back 6 days. Otherwise, go back (day - 1) days.
+            return new Date(d.getFullYear(), d.getMonth(), diff);
+        }
+
+        // Function to format a date as "DD/MM"
+        function formatarDataCurta(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            return `${day}/${month}`;
+        }
+
+        // Function to format a date as "Dia da semana, DD/MM"
+        function formatarDataCompleta(date) {
+            const options = { weekday: 'long', day: '2-digit', month: '2-digit' };
+            const formatted = date.toLocaleDateString('pt-BR', options);
+            // Capitalize the first letter of the weekday
+            return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function carregarAgendamentos() {
+            const diasContainer = document.getElementById('dias');
+            diasContainer.innerHTML = '';
+
+            const startOfWeek = getStartOfWeek(dataAtual);
+            const diasDaSemanaDisplay = [];
+
+            // Generate dates for Monday to Saturday
+            for (let i = 0; i < 6; i++) { // 0=Mon, 1=Tue, ..., 5=Sat
+                const currentDay = new Date(startOfWeek);
+                currentDay.setDate(startOfWeek.getDate() + i);
+                diasDaSemanaDisplay.push(currentDay);
+            }
+
+            // Set the text for the current week range
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 5); // Monday to Saturday
+            document.getElementById('semana-atual').textContent = `Semana de ${formatarDataCurta(startOfWeek)} a ${formatarDataCurta(endOfWeek)}`;
+
+            diasDaSemanaDisplay.forEach(date => {
+                const dataKey = date.toISOString().slice(0, 10); //YYYY-MM-DD for storage
+                let agendamentos = JSON.parse(localStorage.getItem(dataKey)) || [];
+                agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
+                localStorage.setItem(dataKey, JSON.stringify(agendamentos)); // Save sorted back
+
+                const diaDiv = document.createElement('div');
+                diaDiv.className = 'dia';
+                diaDiv.innerHTML = `<h3>${formatarDataCompleta(date)}</h3>`;
+
+                const agendamentoListDiv = document.createElement('div');
+                agendamentoListDiv.className = 'agendamento-list';
+
+
+                let lastMorning = -1; // To insert the lunch break divisor
+
+                if (agendamentos.length === 0) {
+                    agendamentoListDiv.innerHTML += '<p class="no-appointments">Nenhum agendamento para este dia.</p>';
+                } else {
+                    agendamentos.forEach((item, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'agendamento';
+                        div.innerHTML = `
+                            <div class="agendamento-details"><strong>${item.horario}</strong> - ${item.cliente} (${item.servico})</div>
+                            <div class="agendamento-buttons">
+                                <button onclick="editarAgendamento('${dataKey}', ${index})">Editar</button>
+                                <button onclick="removerAgendamento('${dataKey}', ${index})">Remover</button>
+                            </div>
+                        `;
+                        agendamentoListDiv.appendChild(div);
+
+                        const [h, m] = item.horario.split(':').map(Number);
+                        // Check if the current appointment is before or at 13:00 (1 PM)
+                        if (h < 13 || (h === 13 && m === 0)) {
+                            lastMorning = index;
+                        }
+                    });
+
+                    // Insert the lunch break divisor if applicable
+                    // It should be inserted AFTER the last morning appointment
+                    if (lastMorning !== -1 && agendamentos.length > lastMorning + 1) {
+                        const divisor = document.createElement('div');
+                        divisor.className = 'divisor-horario';
+                        // Insert after the current lastMorning element's div within agendamentoListDiv
+                        agendamentoListDiv.insertBefore(divisor, agendamentoListDiv.children[lastMorning + 1]);
+                    }
+                }
+                diaDiv.appendChild(agendamentoListDiv); // Append the list to the day card
+                diasContainer.appendChild(diaDiv);
+            });
+        }
+
+        function removerAgendamento(dataKey, index) {
+            if (!confirm('Tem certeza que deseja remover este agendamento?')) return;
+            let agendamentos = JSON.parse(localStorage.getItem(dataKey)) || [];
+            agendamentos.splice(index, 1);
+            localStorage.setItem(dataKey, JSON.stringify(agendamentos));
+            carregarAgendamentos();
+            showMessage('Agendamento removido com sucesso!', 'success');
+        }
+
+        function editarAgendamento(dataKey, index) {
+            const agendamentos = JSON.parse(localStorage.getItem(dataKey));
+            const item = agendamentos[index];
+
+            document.getElementById('data').value = dataKey;
+            document.getElementById('horario').value = item.horario;
+            document.getElementById('cliente').value = item.cliente;
+            document.getElementById('servico').value = item.servico;
+            document.getElementById('index-edicao').value = `${dataKey}-${index}`; // Store original dataKey and index
+            showMessage('Editando agendamento. Altere os campos e clique em "Salvar Agendamento".', 'info');
+        }
+
+        document.getElementById('form-agendamento').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+            const cliente = document.getElementById('cliente').value;
+            const servico = document.getElementById('servico').value;
+            const indexEdicaoInput = document.getElementById('index-edicao');
+            const indexEdicao = indexEdicaoInput.value;
+
+            if (!servico) {
+                showMessage('Por favor, selecione um serviço.', 'error');
+                return;
+            }
+
+            let agendamentos = JSON.parse(localStorage.getItem(data)) || [];
+            let isEditingSameSlot = false; // Flag to check if we are editing the exact same slot
+
+            if (indexEdicao) {
+                const [oldDataKey, oldIndex] = indexEdicao.split('-');
+                // Check if editing the exact same dataKey and horario for the same original item
+                if (oldDataKey === data && agendamentos[oldIndex] && agendamentos[oldIndex].horario === horario) {
+                    isEditingSameSlot = true;
+                }
+            }
+
+            // Check for duplicate appointment only if it's a new appointment or if moving to a new slot
+            if (!isEditingSameSlot) {
+                const existingAppointment = agendamentos.find((item, idx) => {
+                    // If in edit mode, ensure we don't compare against the item being edited itself
+                    if (indexEdicao && data === indexEdicao.split('-')[0] && idx === parseInt(indexEdicao.split('-')[1])) {
+                        return false;
+                    }
+                    return item.horario === horario;
+                });
+
+                if (existingAppointment) {
+                    showMessage(`Este horário (${horario}) já está agendado para ${existingAppointment.cliente}.`, 'error');
+                    return;
+                }
+            }
+
+            if (indexEdicao) {
+                const [oldDataKey, oldIndex] = indexEdicao.split('-');
+                if (oldDataKey !== data) { // If date changed, remove from old day and add to new
+                    let antigosAgendamentos = JSON.parse(localStorage.getItem(oldDataKey)) || [];
+                    antigosAgendamentos.splice(oldIndex, 1);
+                    localStorage.setItem(oldDataKey, JSON.stringify(antigosAgendamentos));
+                    // Add to new date's appointments
+                    agendamentos.push({ horario, cliente, servico });
+                    showMessage('Agendamento transferido e salvo com sucesso!', 'success');
+                } else { // Same day, just update
+                    agendamentos[oldIndex] = { horario, cliente, servico };
+                    showMessage('Agendamento atualizado com sucesso!', 'success');
+                }
+                indexEdicaoInput.value = ''; // Clear edit index
+            } else {
+                agendamentos.push({ horario, cliente, servico });
+                showMessage('Agendamento salvo com sucesso!', 'success');
+            }
+
+            agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
+            localStorage.setItem(data, JSON.stringify(agendamentos));
+            this.reset();
+            carregarAgendamentos();
         });
 
-        diasContainer.appendChild(diaDiv);
-      });
-    }
-
-    function removerAgendamento(dia, index) {
-      if (!confirm('Tem certeza que deseja remover este agendamento?')) return;
-      const agendamentos = JSON.parse(localStorage.getItem(dia)) || [];
-      agendamentos.splice(index, 1);
-      localStorage.setItem(dia, JSON.stringify(agendamentos));
-      carregarAgendamentos();
-    }
-
-    function editarAgendamento(dia, index) {
-      if (!confirm('Deseja editar este agendamento?')) return;
-      const agendamentos = JSON.parse(localStorage.getItem(dia));
-      const item = agendamentos[index];
-
-      document.getElementById('dia').value = dia;
-      document.getElementById('horario').value = item.horario;
-      document.getElementById('cliente').value = item.cliente;
-      document.getElementById('servico').value = item.servico;
-      document.getElementById('index-edicao').value = `${dia}-${index}`;
-    }
-
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    function gerarImagem() {
-      const container = document.getElementById('dias');
-      html2canvas(container).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'agenda-cabeleireiro.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    }
-
-    document.getElementById('form-agendamento').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const dia = document.getElementById('dia').value;
-      const horario = document.getElementById('horario').value;
-      const cliente = document.getElementById('cliente').value;
-      const servico = document.getElementById('servico').value;
-      const indexEdicao = document.getElementById('index-edicao').value;
-
-      let agendamentos = JSON.parse(localStorage.getItem(dia)) || [];
-
-      if (indexEdicao) {
-        const [d, i] = indexEdicao.split('-');
-        if (d !== dia) {
-          let antigos = JSON.parse(localStorage.getItem(d)) || [];
-          antigos.splice(i, 1);
-          localStorage.setItem(d, JSON.stringify(antigos));
-          agendamentos.push({ horario, cliente, servico });
-        } else {
-          agendamentos[i] = { horario, cliente, servico };
+        function mudarSemana(offset) {
+            dataAtual.setDate(dataAtual.getDate() + (offset * 7));
+            carregarAgendamentos();
+            // Update form date picker to reflect the current week's starting date (Monday)
+            const startOfWeekForm = getStartOfWeek(dataAtual);
+            const year = startOfWeekForm.getFullYear();
+            const month = String(startOfWeekForm.getMonth() + 1).padStart(2, '0');
+            const day = String(startOfWeekForm.getDate()).padStart(2, '0');
+            document.getElementById('data').value = `${year}-${month}-${day}`;
         }
-        document.getElementById('index-edicao').value = '';
-      } else {
-        agendamentos.push({ horario, cliente, servico });
-      }
 
-      agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
-      localStorage.setItem(dia, JSON.stringify(agendamentos));
-      this.reset();
-      carregarAgendamentos();
-    });
+        function gerarImagem() {
+            const elemento = document.getElementById('dias');
 
-    carregarAgendamentos();
-  </script>
+            // Temporarily hide elements for a clean screenshot
+            const elementsToHide = document.querySelectorAll('.agendamento-buttons, .container-botoes, .navegacao-semanal, #form-agendamento, header');
+            elementsToHide.forEach(el => el.style.display = 'none');
+
+            // Get dimensions to ensure image is not cropped and is high resolution
+            const originalWidth = elemento.offsetWidth;
+            const originalHeight = elemento.offsetHeight;
+            const scale = 2; // Increase scale for better quality
+
+            const options = {
+                quality: 1,
+                width: originalWidth * scale,
+                height: originalHeight * scale,
+                style: {
+                    transform: `scale(${scale})`,
+                    transformOrigin: 'top left',
+                    width: `${originalWidth}px`,
+                    height: `${originalHeight}px`,
+                    backgroundColor: window.getComputedStyle(document.body).backgroundColor // Capture background color
+                },
+                pixelRatio: 2 // Use device pixel ratio for sharper images if available
+            };
+
+            domtoimage.toPng(elemento, options).then(function (dataUrl) {
+                const link = document.createElement('a');
+                link.download = `agenda-magalhaes-barbearia-${dataAtual.toISOString().slice(0, 10)}.png`;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showMessage('Agenda exportada como PNG com sucesso!', 'success');
+            }).catch(function (error) {
+                console.error('Ocorreu um erro ao exportar a imagem:', error);
+                showMessage('Ocorreu um erro ao exportar a imagem.', 'error');
+            }).finally(() => {
+                // Restore visibility
+                elementsToHide.forEach(el => {
+                    // Restore original display style (flex for header/buttons, block for form)
+                    if (el.id === 'form-agendamento') {
+                        el.style.display = 'block';
+                    } else if (el.classList.contains('agendamento-buttons') || el.tagName === 'HEADER' || el.classList.contains('container-botoes') || el.classList.contains('navegacao-semanal')) {
+                        el.style.display = 'flex';
+                    } else {
+                        el.style.display = ''; // Revert to default
+                    }
+                });
+            });
+        }
+
+        // Initialize with today's date selected in the form
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('data').value = `${year}-${month}-${day}`;
+            carregarAgendamentos(); // Load appointments for the current week on page load
+        });
+    </script>
 </body>
 </html>
