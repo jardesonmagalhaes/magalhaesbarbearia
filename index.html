@@ -27,7 +27,18 @@
             --success-green: #10b981; /* Green for success messages */
             --error-red: #ef4444; /* Red for error messages */
             --info-blue: #3b82f6; /* Blue for info messages */
-            --divider-color: #e2e8f0; /* Soft divider color */
+            --divider-color: #a0aec0; /* Softer divider color */
+            
+            /* New colors for actions and completed status */
+            --edit-color: #607d8b; /* A subtle blue-grey for Edit */
+            --edit-hover-color: #455a64;
+            --remove-color: #b04040; /* A muted red for Remove */
+            --remove-hover-color: #8b2b2b;
+            --complete-color: #28a745; /* A standard green for Complete */
+            --complete-hover-color: #218838;
+            --completed-background: #e6ffe6; /* Very light green for completed appointments */
+            --completed-border: #81c784; /* A light green border */
+
 
             /* Spacing & Sizes */
             --spacing-xs: 0.5rem;
@@ -294,6 +305,18 @@
             gap: var(--spacing-xs);
             transition: var(--transition-ease);
             box-shadow: var(--shadow-sm);
+            position: relative; /* For the completion mark */
+        }
+
+        /* Style for completed appointments */
+        .agendamento.completed {
+            background-color: var(--completed-background); /* Lighter background */
+            border-left-color: var(--completed-border); /* Light green border */
+            opacity: 0.7; /* Slightly faded */
+        }
+
+        .agendamento.completed .completion-mark {
+            display: block; /* Show the checkmark */
         }
 
         .agendamento:last-child {
@@ -305,6 +328,13 @@
             box-shadow: var(--shadow-md);
             border-left-color: var(--accent-gold); /* Gold border on hover */
         }
+        /* Override hover for completed items */
+        .agendamento.completed:hover {
+            border-left-color: var(--completed-border); /* Keep green border on hover */
+            transform: none; /* No movement on hover */
+            box-shadow: var(--shadow-sm); /* Keep original shadow */
+        }
+
 
         .agendamento strong {
             color: var(--dark-primary);
@@ -315,6 +345,17 @@
         .agendamento-details {
             font-size: 0.95rem;
             color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs); /* Space for completion mark */
+        }
+
+        .completion-mark {
+            color: var(--complete-color); /* Green checkmark */
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 5px;
+            display: none; /* Hidden by default */
         }
 
         .agendamento-buttons {
@@ -322,6 +363,7 @@
             justify-content: flex-end;
             gap: var(--spacing-s);
             margin-top: var(--spacing-s);
+            flex-wrap: wrap; /* Allow buttons to wrap on small screens */
         }
 
         .agendamento-buttons button {
@@ -333,25 +375,40 @@
             font-weight: 600;
             transition: var(--transition-ease);
             box-shadow: var(--shadow-sm);
+            flex-grow: 1; /* Allow buttons to grow and fill space */
+            min-width: 90px; /* Minimum width for buttons */
         }
 
-        .agendamento-buttons button:first-child { /* Edit */
-            background-color: var(--dark-primary);
+        /* Edit button */
+        .agendamento-buttons .btn-edit { 
+            background-color: var(--edit-color); /* Softer gray-blue */
             color: var(--text-light);
         }
 
-        .agendamento-buttons button:first-child:hover {
-            background-color: var(--button-hover-dark);
+        .agendamento-buttons .btn-edit:hover {
+            background-color: var(--edit-hover-color);
             transform: translateY(-1px);
         }
 
-        .agendamento-buttons button:last-child { /* Remove */
-            background-color: var(--remove-red);
+        /* Remove button */
+        .agendamento-buttons .btn-remove { 
+            background-color: var(--remove-color); /* Muted red */
             color: var(--text-light);
         }
 
-        .agendamento-buttons button:last-child:hover {
-            background-color: var(--remove-red-hover);
+        .agendamento-buttons .btn-remove:hover {
+            background-color: var(--remove-hover-color);
+            transform: translateY(-1px);
+        }
+        
+        /* Complete button */
+        .agendamento-buttons .btn-complete { 
+            background-color: var(--complete-color); /* Green for complete */
+            color: var(--text-light);
+        }
+        
+        .agendamento-buttons .btn-complete:hover {
+            background-color: var(--complete-hover-color);
             transform: translateY(-1px);
         }
 
@@ -363,18 +420,18 @@
         }
 
         .divisor-horario::before {
-            content: "Almoço";
+            content: "ALMOÇO"; /* Capitalized and clearer */
             background-color: var(--card-background);
-            color: var(--divider-color);
+            color: var(--light-primary); /* Darker text for better contrast */
             padding: 0 var(--spacing-s);
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700; /* Bolder */
+            font-size: 1.1rem; /* Slightly larger */
             text-transform: uppercase;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.08em; /* More distinct spacing */
         }
 
         .container-botoes {
@@ -433,6 +490,11 @@
         .btn-secondary .feather {
             color: var(--dark-primary); /* Make icons dark on gold background */
         }
+        .agendamento-buttons .feather {
+            width: 1em; /* Smaller icons for action buttons */
+            height: 1em;
+            margin-right: 0.25rem; /* Space between icon and text */
+        }
 
         @media (max-width: 1200px) {
             main {
@@ -488,6 +550,9 @@
             }
             .navegacao-semanal span {
                 font-size: 1.2rem;
+            }
+            .navegacao-semanal .btn-secondary {
+                padding: 0.8rem 1.5rem;
             }
             .dias-container {
                 gap: var(--spacing-s);
@@ -785,6 +850,8 @@
             diasDaSemanaDisplay.forEach(date => {
                 const dataKey = date.toISOString().slice(0, 10); //YYYY-MM-DD for storage
                 let agendamentos = JSON.parse(localStorage.getItem(dataKey)) || [];
+                // Ensure `completed` property exists for all appointments
+                agendamentos = agendamentos.map(item => ({ ...item, completed: item.hasOwnProperty('completed') ? item.completed : false }));
                 agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
                 localStorage.setItem(dataKey, JSON.stringify(agendamentos)); // Save sorted back
 
@@ -803,12 +870,24 @@
                 } else {
                     agendamentos.forEach((item, index) => {
                         const div = document.createElement('div');
-                        div.className = 'agendamento';
+                        div.className = `agendamento ${item.completed ? 'completed' : ''}`; // Add 'completed' class if true
                         div.innerHTML = `
-                            <div class="agendamento-details"><strong>${item.horario}</strong> - ${item.cliente} (${item.servico})</div>
+                            <div class="agendamento-details">
+                                ${item.completed ? '<span class="completion-mark">✔</span>' : ''} <strong>${item.horario}</strong> - ${item.cliente} (${item.servico})
+                            </div>
                             <div class="agendamento-buttons">
-                                <button onclick="editarAgendamento('${dataKey}', ${index})">Editar</button>
-                                <button onclick="removerAgendamento('${dataKey}', ${index})">Remover</button>
+                                <button class="btn-complete" onclick="toggleConcluido('${dataKey}', ${index})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.82"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                    ${item.completed ? 'Desfazer' : 'Concluir'}
+                                </button>
+                                <button class="btn-edit" onclick="editarAgendamento('${dataKey}', ${index})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                    Editar
+                                </button>
+                                <button class="btn-remove" onclick="removerAgendamento('${dataKey}', ${index})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    Remover
+                                </button>
                             </div>
                         `;
                         agendamentoListDiv.appendChild(div);
@@ -855,144 +934,142 @@
             showMessage('Editando agendamento. Altere os campos e clique em "Salvar Agendamento".', 'info');
         }
 
+        // New function to toggle completion status
+        function toggleConcluido(dataKey, index) {
+            let agendamentos = JSON.parse(localStorage.getItem(dataKey)) || [];
+            if (agendamentos[index]) {
+                agendamentos[index].completed = !agendamentos[index].completed; // Toggle the status
+                localStorage.setItem(dataKey, JSON.stringify(agendamentos));
+                carregarAgendamentos(); // Re-render to show the change
+                if (agendamentos[index].completed) {
+                    showMessage('Agendamento marcado como concluído!', 'success');
+                } else {
+                    showMessage('Status de agendamento desfeito.', 'info');
+                }
+            }
+        }
+
         document.getElementById('form-agendamento').addEventListener('submit', function (e) {
             e.preventDefault();
+
             const data = document.getElementById('data').value;
             const horario = document.getElementById('horario').value;
-            const cliente = document.getElementById('cliente').value;
+            const cliente = capitalize(document.getElementById('cliente').value.toLowerCase());
             const servico = document.getElementById('servico').value;
-            const indexEdicaoInput = document.getElementById('index-edicao');
-            const indexEdicao = indexEdicaoInput.value;
+            const indexEdicao = document.getElementById('index-edicao').value;
 
-            if (!servico) {
-                showMessage('Por favor, selecione um serviço.', 'error');
+            if (!data || !horario || !cliente || !servico) {
+                showMessage('Por favor, preencha todos os campos.', 'error');
                 return;
             }
 
-            let agendamentos = JSON.parse(localStorage.getItem(data)) || [];
-            let isEditingSameSlot = false; // Flag to check if we are editing the exact same slot
+            let agendamentosDoDia = JSON.parse(localStorage.getItem(data)) || [];
+            let isEditing = false;
+            let originalDataKey = data;
+            let originalIndex = -1;
 
             if (indexEdicao) {
-                const [oldDataKey, oldIndex] = indexEdicao.split('-');
-                // Check if editing the exact same dataKey and horario for the same original item
-                if (oldDataKey === data && agendamentos[oldIndex] && agendamentos[oldIndex].horario === horario) {
-                    isEditingSameSlot = true;
-                }
+                const parts = indexEdicao.split('-');
+                originalDataKey = parts[0];
+                originalIndex = parseInt(parts[1]);
+                isEditing = true;
             }
 
-            // Check for duplicate appointment only if it's a new appointment or if moving to a new slot
-            if (!isEditingSameSlot) {
-                const existingAppointment = agendamentos.find((item, idx) => {
-                    // If in edit mode, ensure we don't compare against the item being edited itself
-                    if (indexEdicao && data === indexEdicao.split('-')[0] && idx === parseInt(indexEdicao.split('-')[1])) {
-                        return false;
+            // Check for time conflicts for new or edited appointment
+            const newAppointmentTime = new Date(`${data}T${horario}:00`);
+            const hasConflict = agendamentosDoDia.some((agendamento, idx) => {
+                const existingAppointmentTime = new Date(`${data}T${agendamento.horario}:00`);
+                // Check if times are exactly the same, but ignore if it's the item being edited AND the date hasn't changed
+                if (existingAppointmentTime.getTime() === newAppointmentTime.getTime()) {
+                    if (isEditing && originalDataKey === data && originalIndex === idx) {
+                        return false; // It's the same appointment being edited, no conflict with itself
                     }
-                    return item.horario === horario;
-                });
-
-                if (existingAppointment) {
-                    showMessage(`Este horário (${horario}) já está agendado para ${existingAppointment.cliente}.`, 'error');
-                    return;
+                    return true; // Conflict found
                 }
+                return false;
+            });
+
+            if (hasConflict) {
+                showMessage('Já existe um agendamento para este horário neste dia. Por favor, escolha outro horário.', 'error');
+                return;
             }
 
-            if (indexEdicao) {
-                const [oldDataKey, oldIndex] = indexEdicao.split('-');
-                if (oldDataKey !== data) { // If date changed, remove from old day and add to new
-                    let antigosAgendamentos = JSON.parse(localStorage.getItem(oldDataKey)) || [];
-                    antigosAgendamentos.splice(oldIndex, 1);
-                    localStorage.setItem(oldDataKey, JSON.stringify(antigosAgendamentos));
-                    // Add to new date's appointments
-                    agendamentos.push({ horario, cliente, servico });
-                    showMessage('Agendamento transferido e salvo com sucesso!', 'success');
-                } else { // Same day, just update
-                    agendamentos[oldIndex] = { horario, cliente, servico };
-                    showMessage('Agendamento atualizado com sucesso!', 'success');
+            const novoAgendamento = { data, horario, cliente, servico, completed: false }; // Ensure new appointments are not completed by default
+
+            if (isEditing) {
+                // If editing, first remove the old entry if the date changed
+                if (originalDataKey !== data) {
+                    let oldAgendamentos = JSON.parse(localStorage.getItem(originalDataKey)) || [];
+                    oldAgendamentos.splice(originalIndex, 1);
+                    localStorage.setItem(originalDataKey, JSON.stringify(oldAgendamentos));
                 }
-                indexEdicaoInput.value = ''; // Clear edit index
+                
+                // Add or update the new/edited appointment
+                if (originalDataKey === data) { // If editing on the same day
+                    agendamentosDoDia[originalIndex] = novoAgendamento;
+                } else { // If date changed, add to new day
+                    agendamentosDoDia.push(novoAgendamento);
+                }
+                showMessage('Agendamento atualizado com sucesso!', 'success');
             } else {
-                agendamentos.push({ horario, cliente, servico });
+                agendamentosDoDia.push(novoAgendamento);
                 showMessage('Agendamento salvo com sucesso!', 'success');
             }
 
-            agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
-            localStorage.setItem(data, JSON.stringify(agendamentos));
-            this.reset();
+            localStorage.setItem(data, JSON.stringify(agendamentosDoDia));
+
+            document.getElementById('form-agendamento').reset();
+            document.getElementById('index-edicao').value = ''; // Clear edit index
             carregarAgendamentos();
         });
 
+
         function mudarSemana(offset) {
-            dataAtual.setDate(dataAtual.getDate() + (offset * 7));
+            const startOfCurrentWeek = getStartOfWeek(dataAtual);
+            startOfCurrentWeek.setDate(startOfCurrentWeek.getDate() + (offset * 7)); // Move by 7 days
+            dataAtual = startOfCurrentWeek;
             carregarAgendamentos();
-            // Update form date picker to reflect the current week's starting date (Monday)
-            const startOfWeekForm = getStartOfWeek(dataAtual);
-            const year = startOfWeekForm.getFullYear();
-            const month = String(startOfWeekForm.getMonth() + 1).padStart(2, '0');
-            const day = String(startOfWeekForm.getDate()).padStart(2, '0');
-            document.getElementById('data').value = `${year}-${month}-${day}`;
         }
 
         function gerarImagem() {
-            const elemento = document.getElementById('dias');
+            showMessage('Gerando imagem da agenda...', 'info');
+            const element = document.getElementById('dias'); // Capture the entire days container
+            
+            // Temporarily adjust styles for better image generation
+            element.style.maxWidth = 'initial';
+            element.style.margin = '0 auto';
+            element.style.padding = '20px';
+            element.style.backgroundColor = 'white';
 
-            // Temporarily hide elements for a clean screenshot
-            const elementsToHide = document.querySelectorAll('.agendamento-buttons, .container-botoes, .navegacao-semanal, #form-agendamento, header');
-            elementsToHide.forEach(el => el.style.display = 'none');
-
-            // Get dimensions to ensure image is not cropped and is high resolution
-            const originalWidth = elemento.offsetWidth;
-            const originalHeight = elemento.offsetHeight;
-            const scale = 2; // Increase scale for better quality
-
-            const options = {
-                quality: 1,
-                width: originalWidth * scale,
-                height: originalHeight * scale,
-                style: {
-                    transform: `scale(${scale})`,
-                    transformOrigin: 'top left',
-                    width: `${originalWidth}px`,
-                    height: `${originalHeight}px`,
-                    backgroundColor: window.getComputedStyle(document.body).backgroundColor // Capture background color
-                },
-                pixelRatio: 2 // Use device pixel ratio for sharper images if available
-            };
-
-            domtoimage.toPng(elemento, options).then(function (dataUrl) {
-                const link = document.createElement('a');
-                link.download = `agenda-magalhaes-barbearia-${dataAtual.toISOString().slice(0, 10)}.png`;
-                link.href = dataUrl;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showMessage('Agenda exportada como PNG com sucesso!', 'success');
-            }).catch(function (error) {
-                console.error('Ocorreu um erro ao exportar a imagem:', error);
-                showMessage('Ocorreu um erro ao exportar a imagem.', 'error');
-            }).finally(() => {
-                // Restore visibility
-                elementsToHide.forEach(el => {
-                    // Restore original display style (flex for header/buttons, block for form)
-                    if (el.id === 'form-agendamento') {
-                        el.style.display = 'block';
-                    } else if (el.classList.contains('agendamento-buttons') || el.tagName === 'HEADER' || el.classList.contains('container-botoes') || el.classList.contains('navegacao-semanal')) {
-                        el.style.display = 'flex';
-                    } else {
-                        el.style.display = ''; // Revert to default
-                    }
+            domtoimage.toPng(element)
+                .then(function (dataUrl) {
+                    const link = document.createElement('a');
+                    link.download = `agenda-magalhaes-barbearia-${new Date().toISOString().slice(0, 10)}.png`;
+                    link.href = dataUrl;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showMessage('Imagem gerada com sucesso!', 'success');
+                })
+                .catch(function (error) {
+                    console.error('oops, something went wrong!', error);
+                    showMessage('Erro ao gerar imagem. Tente novamente.', 'error');
+                })
+                .finally(() => {
+                    // Revert styles after image generation
+                    element.style.maxWidth = null;
+                    element.style.margin = null;
+                    element.style.padding = null;
+                    element.style.backgroundColor = null;
                 });
-            });
         }
 
-        // Initialize with today's date selected in the form
+        // Initial load
         document.addEventListener('DOMContentLoaded', () => {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            document.getElementById('data').value = `${year}-${month}-${day}`;
-            carregarAgendamentos(); // Load appointments for the current week on page load
+            dataAtual = getStartOfWeek(new Date()); // Set initial date to the start of the current week
+            carregarAgendamentos();
         });
+
     </script>
 </body>
 </html>
