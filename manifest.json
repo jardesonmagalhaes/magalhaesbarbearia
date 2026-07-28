@@ -1,9 +1,9 @@
 {
   "short_name": "Agenda",
-  "name": "Agenda do Givanildo",
+  "name": "Agenda Barbearia",
   "icons": [],
   "start_url": "./index.html",
-  "background_color": "#020617",
-  "theme_color": "#0f172a",
+  "background_color": "#0b0f19",
+  "theme_color": "#161e2e",
   "display": "standalone"
 }
