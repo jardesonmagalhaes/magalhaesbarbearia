@@ -3,117 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agenda do Pai</title>
+  <title>Minha Agenda</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
-  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-  <!-- Tela de Login -->
-  <div id="login-screen" class="screen flex-center">
-    <form id="login-form" class="card">
-      <h2>Agenda Barbearia</h2>
-      <p class="subtitle">Acesse para ver os horários</p>
-      
-      <div class="field">
-        <label>E-mail</label>
-        <input type="email" id="login-email" required placeholder="seu@email.com">
-      </div>
-      
-      <div class="field">
-        <label>Senha</label>
-        <input type="password" id="login-password" required placeholder="******">
-      </div>
-      
-      <button type="submit" id="btn-login" class="btn btn-primary">Entrar</button>
-    </form>
-  </div>
-
-  <!-- Tela Principal da Agenda -->
-  <div id="app-screen" class="screen hidden">
-    <!-- Topbar -->
+  <!-- App Principal (Abre direto sem login) -->
+  <div id="app-screen" class="screen">
+    
     <header class="header">
-      <h1>✂️ Agenda do Pai</h1>
-      <button id="btn-logout" class="btn-icon" title="Sair">🚪</button>
+      <div class="logo">
+        <span class="logo-icon">✂️</span>
+        <div>
+          <h1>Agenda do Dia</h1>
+          <p id="current-date-label">Carregando...</p>
+        </div>
+      </div>
+      <button id="btn-refresh" class="btn-refresh" title="Atualizar">🔄</button>
     </header>
 
     <main class="container">
+      
       <!-- Seletor de Data -->
-      <div class="date-bar card flex-between">
-        <button id="btn-prev-day" class="btn-icon">◀</button>
+      <div class="date-card">
+        <button id="btn-prev-day" class="nav-btn">◀</button>
         <input type="date" id="selected-date">
-        <button id="btn-next-day" class="btn-icon">▶</button>
+        <button id="btn-next-day" class="nav-btn">▶</button>
       </div>
 
-      <!-- Métricas / Dashboard Diário -->
-      <div class="dashboard-grid">
-        <div class="card metric">
-          <span class="metric-label">Atendimentos</span>
-          <span id="metric-counts" class="metric-value">0 / 0</span>
+      <!-- Dashboard Diário -->
+      <div class="dash-grid">
+        <div class="dash-card">
+          <span class="dash-title">Atendimentos</span>
+          <span id="metric-counts" class="dash-value">0 / 0</span>
         </div>
-        <div class="card metric">
-          <span class="metric-label">Estimativa Hoje</span>
-          <span id="metric-revenue" class="metric-value green">R$ 0,00</span>
+        <div class="dash-card green-border">
+          <span class="dash-title">Faturado Hoje</span>
+          <span id="metric-revenue" class="dash-value green-text">R$ 0,00</span>
         </div>
       </div>
 
       <!-- Lista de Horários -->
-      <div class="schedule-section">
-        <div class="flex-between section-title">
-          <span>Horários do Dia</span>
-          <button id="btn-refresh" class="btn-link">🔄 Atualizar</button>
-        </div>
-        
-        <div id="appointments-list" class="appointments-list">
-          <!-- Inserido dinamicamente via JS -->
-        </div>
+      <div class="section-header">
+        <h2>Horários Marcados</h2>
       </div>
+      
+      <div id="appointments-list" class="list-container">
+        <!-- Itens renderizados via JS -->
+      </div>
+
     </main>
 
     <!-- Botão Flutuante (+) -->
-    <button id="btn-open-modal" class="fab">+</button>
+    <button id="btn-open-agendar" class="fab" title="Agendar Horário">+</button>
 
-    <!-- Modal de Novo Agendamento -->
-    <div id="modal" class="modal-backdrop hidden">
-      <div class="modal-content card">
-        <h2>Novo Agendamento</h2>
-        <form id="appointment-form">
+    <!-- Modal 1: Novo Agendamento (Apenas Nome, Hora e Telefone) -->
+    <div id="modal-agendar" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Agendar Cliente</h3>
+          <button class="btn-close" onclick="closeModal('modal-agendar')">✕</button>
+        </div>
+        <form id="form-agendar">
           <div class="field">
-            <label>Nome do Cliente</label>
-            <input type="text" id="cust-name" required placeholder="Ex: João Silva">
-          </div>
-
-          <div class="field">
-            <label>Telefone (Opcional)</label>
-            <input type="tel" id="cust-phone" placeholder="(88) 99999-9999">
+            <label>Nome do Cliente *</label>
+            <input type="text" id="add-nome" required placeholder="Ex: Marcos Silva">
           </div>
 
           <div class="grid-2">
             <div class="field">
-              <label>Serviço</label>
-              <input type="text" id="cust-service" required value="Corte Masculino">
+              <label>Horário *</label>
+              <input type="time" id="add-hora" required value="09:00">
             </div>
             <div class="field">
-              <label>Horário</label>
-              <input type="time" id="cust-time" required value="09:00">
+              <label>Telefone (Opcional)</label>
+              <input type="tel" id="add-telefone" placeholder="(88) 99999-9999">
             </div>
           </div>
 
-          <div class="field">
-            <label>Valor (R$)</label>
-            <input type="number" step="0.01" id="cust-price" required value="35.00">
-          </div>
-
-          <div class="grid-2 modal-actions">
-            <button type="button" id="btn-close-modal" class="btn btn-secondary">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Salvar</button>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modal-agendar')">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Confirmar Agendamento</button>
           </div>
         </form>
       </div>
     </div>
+
+    <!-- Modal 2: Finalizar Atendimento (Serviços e Valor Final) -->
+    <div id="modal-finalizar" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Concluir Atendimento</h3>
+          <button class="btn-close" onclick="closeModal('modal-finalizar')">✕</button>
+        </div>
+        <form id="form-finalizar">
+          <input type="hidden" id="finish-id">
+          
+          <p class="finish-client-name" id="finish-client-display"></p>
+
+          <div class="field">
+            <label>Selecione os Serviços Prestados:</label>
+            <div class="services-options">
+              <label class="chip-option"><input type="checkbox" value="Corte"> <span>Corte</span></label>
+              <label class="chip-option"><input type="checkbox" value="Barba"> <span>Barba</span></label>
+              <label class="chip-option"><input type="checkbox" value="Sobrancelha"> <span>Sobrancelha</span></label>
+              <label class="chip-option"><input type="checkbox" value="Pigmentação"> <span>Pigmentação</span></label>
+              <label class="chip-option"><input type="checkbox" value="Lavagem"> <span>Lavagem</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Valor Total Cobrado (R$) *</label>
+            <input type="number" step="0.01" id="finish-valor" required placeholder="35,00">
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modal-finalizar')">Cancelar</button>
+            <button type="submit" class="btn btn-success">Finalizar e Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 
   <script src="app.js"></script>
