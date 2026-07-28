@@ -1,1094 +1,121 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Magalhães Barbearia | Agenda Profissional</title>
-    <link rel="icon" href="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Base Colors */
-            --dark-primary: #1a202c; /* Deep charcoal for main elements */
-            --light-primary: #2d3748; /* Slightly lighter charcoal for secondary elements */
-            --accent-gold: #e2b34c; /* Rich gold for highlights */
-            --text-light: #f7fafc; /* Off-white for text on dark backgrounds */
-            --text-dark: #2d3748; /* Dark grey for text on light backgrounds */
-            --background-light: #edf2f7; /* Very light grey for main background */
-            --card-background: #ffffff; /* Pure white for cards */
-
-            /* Specific Elements */
-            --form-border: #cbd5e0; /* Light grey for form input borders */
-            --button-hover-dark: #12161e; /* Darker hover for primary buttons */
-            --button-hover-gold: #c29532; /* Darker hover for gold buttons */
-            --remove-red: #ef4444; /* Brighter red for delete */
-            --remove-red-hover: #dc2626; /* Darker red on hover */
-            --success-green: #10b981; /* Green for success messages */
-            --error-red: #ef4444; /* Red for error messages */
-            --info-blue: #3b82f6; /* Blue for info messages */
-            --divider-color: #a0aec0; /* Softer divider color */
-            
-            /* New colors for actions and completed status */
-            --edit-color: #607d8b; /* A subtle blue-grey for Edit */
-            --edit-hover-color: #455a64;
-            --remove-color: #b04040; /* A muted red for Remove */
-            --remove-hover-color: #8b2b2b;
-            --complete-color: #28a745; /* A standard green for Complete */
-            --complete-hover-color: #218838;
-            --completed-background: #e6ffe6; /* Very light green for completed appointments */
-            --completed-border: #81c784; /* A light green border */
-
-
-            /* Spacing & Sizes */
-            --spacing-xs: 0.5rem;
-            --spacing-s: 1rem;
-            --spacing-m: 1.5rem;
-            --spacing-l: 2rem;
-            --spacing-xl: 3rem;
-
-            /* Shadows */
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-
-            /* Transitions */
-            --transition-ease: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--background-light);
-            color: var(--text-dark);
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        header {
-            background-color: var(--dark-primary);
-            color: var(--text-light);
-            padding: var(--spacing-l) var(--spacing-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-m);
-            flex-wrap: wrap;
-            box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            border-bottom: 5px solid var(--accent-gold); /* Accent line */
-            position: relative;
-            top: 0;
-            z-index: 1000;
-        }
-
-        header img {
-            height: 80px; /* Larger logo */
-            width: 80px;
-            border-radius: 50%;
-            border: 4px solid var(--accent-gold);
-            object-fit: cover;
-        }
-
-        h1 {
-            font-family: 'Oswald', sans-serif; /* Stronger font for title */
-            font-size: 2.8rem; /* Larger title */
-            font-weight: 700;
-            text-align: center;
-            margin: 0;
-            letter-spacing: 0.1em; /* More distinct spacing */
-            text-transform: uppercase;
-        }
-
-        main {
-            flex-grow: 1;
-            padding: var(--spacing-xl);
-            max-width: 1600px; /* Wider content area */
-            margin: var(--spacing-xl) auto;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-l);
-        }
-
-        form {
-            background-color: var(--card-background);
-            box-shadow: var(--shadow-lg);
-            padding: var(--spacing-xl);
-            border-radius: 12px;
-            max-width: 700px; /* Ample space for form */
-            width: 100%;
-            margin: 0 auto;
-            border: 1px solid var(--form-border);
-        }
-
-        form label {
-            display: block;
-            margin-bottom: var(--spacing-s);
-            font-weight: 600;
-            color: var(--light-primary);
-            font-size: 1.05rem;
-        }
-
-        form input,
-        form select {
-            width: 100%;
-            padding: var(--spacing-s) var(--spacing-m);
-            margin-bottom: var(--spacing-l);
-            border: 1px solid var(--form-border);
-            border-radius: 8px;
-            font-size: 1rem;
-            background-color: var(--background-light);
-            color: var(--text-dark);
-            transition: var(--transition-ease);
-        }
-
-        form input:focus,
-        form select:focus {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 0 3px rgba(226, 179, 76, 0.3);
-            outline: none;
-            background-color: var(--card-background);
-        }
-
-        .btn-primary,
-        .btn-secondary {
-            padding: var(--spacing-s) var(--spacing-l);
-            border: none;
-            border-radius: 8px;
-            font-size: 1.05rem;
-            cursor: pointer;
-            font-weight: 700;
-            transition: var(--transition-ease);
-            box-shadow: var(--shadow-sm);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-xs);
-        }
-
-        .btn-primary {
-            background-color: var(--dark-primary);
-            color: var(--text-light);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--button-hover-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-secondary {
-            background-color: var(--accent-gold);
-            color: var(--dark-primary); /* Text on gold should be dark */
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--button-hover-gold);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        button[type="submit"] {
-            width: 100%; /* Full width submit button */
-            margin-top: var(--spacing-s);
-        }
-
-        .navegacao-semanal {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: var(--spacing-m);
-            margin-bottom: var(--spacing-l);
-            flex-wrap: wrap;
-            background-color: var(--light-primary);
-            padding: var(--spacing-s) var(--spacing-m);
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .navegacao-semanal .btn-secondary {
-            background-color: var(--accent-gold); /* Gold for navigation buttons */
-            color: var(--dark-primary);
-            font-size: 1rem;
-            padding: 0.8rem 1.5rem;
-            margin-top: 0;
-        }
-
-        .navegacao-semanal .btn-secondary:hover {
-            background-color: var(--button-hover-gold);
-        }
-
-        .navegacao-semanal span {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-light);
-            text-align: center;
-            flex-grow: 1;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .dias-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Slightly wider cards */
-            gap: var(--spacing-l);
-            padding-bottom: var(--spacing-l);
-        }
-
-        .dia {
-            background-color: var(--card-background);
-            border-radius: 12px;
-            padding: var(--spacing-l);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            min-height: 280px; /* Ensures consistent card height */
-            border: 1px solid var(--form-border);
-            transition: var(--transition-ease);
-        }
-
-        .dia:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .dia h3 {
-            text-align: center;
-            color: var(--dark-primary);
-            font-size: 1.8rem;
-            font-family: 'Oswald', sans-serif;
-            border-bottom: 3px solid var(--accent-gold);
-            padding-bottom: var(--spacing-s);
-            margin-bottom: var(--spacing-m);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .agendamento-list {
-            flex-grow: 1;
-            overflow-y: auto; /* Enable scrolling for many appointments */
-            padding-right: 5px; /* Space for scrollbar */
-        }
-        .agendamento-list::-webkit-scrollbar {
-            width: 8px;
-        }
-        .agendamento-list::-webkit-scrollbar-track {
-            background: var(--background-light);
-            border-radius: 10px;
-        }
-        .agendamento-list::-webkit-scrollbar-thumb {
-            background: var(--accent-gold);
-            border-radius: 10px;
-        }
-        .agendamento-list::-webkit-scrollbar-thumb:hover {
-            background: var(--button-hover-gold);
-        }
-
-
-        .agendamento {
-            background-color: var(--background-light);
-            padding: var(--spacing-s) var(--spacing-m);
-            border-radius: 8px;
-            margin-bottom: var(--spacing-s);
-            border-left: 6px solid var(--dark-primary); /* Stronger highlight */
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-xs);
-            transition: var(--transition-ease);
-            box-shadow: var(--shadow-sm);
-            position: relative; /* For the completion mark */
-        }
-
-        /* Style for completed appointments */
-        .agendamento.completed {
-            background-color: var(--completed-background); /* Lighter background */
-            border-left-color: var(--completed-border); /* Light green border */
-            opacity: 0.7; /* Slightly faded */
-        }
-
-        .agendamento.completed .completion-mark {
-            display: block; /* Show the checkmark */
-        }
-
-        .agendamento:last-child {
-            margin-bottom: 0;
-        }
-
-        .agendamento:hover {
-            transform: translateX(5px); /* Slight shift on hover */
-            box-shadow: var(--shadow-md);
-            border-left-color: var(--accent-gold); /* Gold border on hover */
-        }
-        /* Override hover for completed items */
-        .agendamento.completed:hover {
-            border-left-color: var(--completed-border); /* Keep green border on hover */
-            transform: none; /* No movement on hover */
-            box-shadow: var(--shadow-sm); /* Keep original shadow */
-        }
-
-
-        .agendamento strong {
-            color: var(--dark-primary);
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .agendamento-details {
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs); /* Space for completion mark */
-        }
-
-        .completion-mark {
-            color: var(--complete-color); /* Green checkmark */
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-right: 5px;
-            display: none; /* Hidden by default */
-        }
-
-        .agendamento-buttons {
-            display: flex;
-            justify-content: flex-end; /* Align buttons to the right */
-            gap: var(--spacing-s); /* Space between buttons */
-            margin-top: var(--spacing-s);
-            flex-wrap: wrap; /* Allow buttons to wrap on small screens */
-        }
-
-        .agendamento-buttons button {
-            /* Adjustments for icon-only buttons */
-            padding: 0; /* Remove padding */
-            width: 40px; /* Fixed width for square/circular button */
-            height: 40px; /* Fixed height for square/circular button */
-            border: none;
-            border-radius: 50%; /* Make them circular */
-            font-size: 0; /* Hide any potential text */
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition-ease);
-            box-shadow: var(--shadow-sm);
-            display: flex; /* Use flexbox to center the icon */
-            align-items: center;
-            justify-content: center;
-            flex-grow: 0; /* Prevent them from growing */
-            min-width: auto; /* Remove min-width constraint */
-        }
-
-        /* SVG icon styling within action buttons */
-        .agendamento-buttons .feather {
-            width: 20px; /* Adjust icon size */
-            height: 20px; /* Adjust icon size */
-            margin-right: 0; /* No margin as there's no text */
-            color: var(--text-light); /* Icons should be light on colored buttons */
-        }
-
-        /* Edit button */
-        .agendamento-buttons .btn-edit { 
-            background-color: var(--edit-color); /* Softer gray-blue */
-        }
-
-        .agendamento-buttons .btn-edit:hover {
-            background-color: var(--edit-hover-color);
-            transform: translateY(-1px);
-        }
-
-        /* Remove button */
-        .agendamento-buttons .btn-remove { 
-            background-color: var(--remove-color); /* Muted red */
-        }
-
-        .agendamento-buttons .btn-remove:hover {
-            background-color: var(--remove-hover-color);
-            transform: translateY(-1px);
-        }
-        
-        /* Complete button */
-        .agendamento-buttons .btn-complete { 
-            background-color: var(--complete-color); /* Green for complete */
-        }
-        
-        .agendamento-buttons .btn-complete:hover {
-            background-color: var(--complete-hover-color);
-            transform: translateY(-1px);
-        }
-
-        .divisor-horario {
-            border-top: 2px dashed var(--divider-color);
-            margin: var(--spacing-l) 0;
-            text-align: center;
-            position: relative;
-        }
-
-        .divisor-horario::before {
-            content: "ALMOÇO"; /* Capitalized and clearer */
-            background-color: var(--card-background);
-            color: var(--light-primary); /* Darker text for better contrast */
-            padding: 0 var(--spacing-s);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: 700; /* Bolder */
-            font-size: 1.1rem; /* Slightly larger */
-            text-transform: uppercase;
-            letter-spacing: 0.08em; /* More distinct spacing */
-        }
-
-        .container-botoes {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-m);
-            padding-top: var(--spacing-m);
-            padding-bottom: var(--spacing-xl);
-            flex-wrap: wrap;
-        }
-
-        .message-container {
-            padding: var(--spacing-s) var(--spacing-m);
-            border-radius: 8px;
-            margin-bottom: var(--spacing-l);
-            font-weight: 600;
-            text-align: center;
-            border-left: 6px solid;
-            display: none; /* Hidden by default */
-            box-shadow: var(--shadow-sm);
-        }
-        .message-container.success {
-            background-color: #d1fae5; /* Green light background */
-            color: var(--success-green);
-            border-color: var(--success-green);
-        }
-        .message-container.error {
-            background-color: #fee2e2; /* Red light background */
-            color: var(--error-red);
-            border-color: var(--error-red);
-        }
-        .message-container.info {
-            background-color: #eff6ff; /* Blue light background */
-            color: var(--info-blue);
-            border-color: var(--info-blue);
-        }
-
-        .no-appointments {
-            text-align: center;
-            color: #94a3b8;
-            font-style: italic;
-            padding: var(--spacing-m) 0;
-            font-size: 1rem;
-        }
-
-        /* SVG icon styling */
-        .feather {
-            width: 1.2em;
-            height: 1.2em;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            fill: none;
-        }
-        .btn-secondary .feather {
-            color: var(--dark-primary); /* Make icons dark on gold background */
-        }
-        /* This rule is now more specific for the main button icons */
-        .btn-primary .feather {
-            width: 1.2em;
-            height: 1.2em;
-            margin-right: 0.25rem;
-        }
-
-
-        @media (max-width: 1200px) {
-            main {
-                padding: var(--spacing-l);
-            }
-            .dias-container {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: var(--spacing-m);
-            }
-            .dia {
-                padding: var(--spacing-m);
-            }
-            .dia h3 {
-                font-size: 1.6rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                padding: var(--spacing-m) var(--spacing-s);
-            }
-            h1 {
-                font-size: 2.2rem;
-                letter-spacing: 0.08em;
-            }
-            header img {
-                height: 60px;
-                width: 60px;
-            }
-            main {
-                padding: var(--spacing-m);
-                gap: var(--spacing-m);
-            }
-            form {
-                padding: var(--spacing-m);
-            }
-            form label {
-                margin-bottom: var(--spacing-xs);
-            }
-            form input,
-            form select {
-                margin-bottom: var(--spacing-m);
-            }
-            .btn-primary, .btn-secondary {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-            }
-            .navegacao-semanal {
-                flex-direction: column;
-                gap: var(--spacing-s);
-                padding: var(--spacing-s);
-            }
-            .navegacao-semanal span {
-                font-size: 1.2rem;
-            }
-            .navegacao-semanal .btn-secondary {
-                padding: 0.8rem 1.5rem;
-            }
-            .dias-container {
-                gap: var(--spacing-s);
-            }
-            .dia {
-                padding: var(--spacing-m) var(--spacing-s);
-                min-height: 220px;
-            }
-            .dia h3 {
-                font-size: 1.4rem;
-                margin-bottom: var(--spacing-s);
-            }
-            .agendamento {
-                padding: var(--spacing-xs) var(--spacing-s);
-                font-size: 0.9rem;
-            }
-            .agendamento strong {
-                font-size: 1rem;
-            }
-            .agendamento-buttons button {
-                width: 36px; /* Smaller buttons on smaller screens */
-                height: 36px;
-            }
-            .agendamento-buttons .feather {
-                width: 18px; /* Smaller icons for smaller buttons */
-                height: 18px;
-            }
-            .divisor-horario {
-                margin: var(--spacing-m) 0;
-            }
-        }
-
-        /* Added for very small screens (mobile) */
-        @media (max-width: 480px) {
-            header {
-                padding: var(--spacing-s);
-            }
-            h1 {
-                font-size: 1.8rem;
-                letter-spacing: 0.05em;
-            }
-            header img {
-                height: 50px;
-                width: 50px;
-            }
-            main {
-                padding: var(--spacing-s);
-                gap: var(--spacing-s);
-            }
-            form {
-                padding: var(--spacing-s);
-            }
-            form label {
-                font-size: 1rem;
-            }
-            form input,
-            form select {
-                padding: var(--spacing-xs) var(--spacing-s);
-                margin-bottom: var(--spacing-m);
-                font-size: 0.9rem;
-            }
-            .btn-primary, .btn-secondary {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-            .navegacao-semanal {
-                padding: var(--spacing-xs);
-                gap: var(--spacing-xs);
-            }
-            .navegacao-semanal span {
-                font-size: 1rem;
-                padding: 0 var(--spacing-xs);
-            }
-            .navegacao-semanal .btn-secondary {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-            .dias-container {
-                grid-template-columns: 1fr; /* Stack cards on very small screens */
-                gap: var(--spacing-s);
-            }
-            .dia {
-                padding: var(--spacing-s);
-                min-height: auto; /* Allow height to adjust based on content */
-            }
-            .dia h3 {
-                font-size: 1.2rem;
-                margin-bottom: var(--spacing-s);
-            }
-            .agendamento {
-                padding: var(--spacing-xs);
-                font-size: 0.85rem;
-            }
-            .agendamento strong {
-                font-size: 0.9rem;
-            }
-            .agendamento-buttons {
-                flex-direction: row; /* Keep buttons in a row for better use of space */
-                justify-content: flex-end;
-                gap: var(--spacing-xs); /* Reduce gap on very small screens */
-            }
-            .agendamento-buttons button {
-                width: 32px; /* Even smaller buttons on very small screens */
-                height: 32px;
-            }
-            .agendamento-buttons .feather {
-                width: 16px; /* Even smaller icons */
-                height: 16px;
-            }
-            .divisor-horario {
-                margin: var(--spacing-s) 0;
-            }
-            .divisor-horario::before {
-                font-size: 0.8rem;
-            }
-        }
-
-        /* Print styles */
-        @media print {
-            body {
-                background-color: #fff;
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
-            }
-            header, .container-botoes, .agendamento-buttons, .navegacao-semanal, form, .message-container {
-                display: none;
-            }
-            main {
-                padding: 0;
-                margin: 0;
-                max-width: none;
-                width: 100%;
-            }
-            .dias-container {
-                display: grid !important;
-                grid-template-columns: repeat(2, 1fr); /* 2 columns for print */
-                gap: var(--spacing-m);
-                padding: var(--spacing-m);
-            }
-            .dia {
-                box-shadow: none;
-                border: 1px solid var(--form-border);
-                padding: var(--spacing-m);
-                page-break-inside: avoid;
-                min-height: auto;
-            }
-            .dia h3 {
-                font-size: 1.5rem;
-                padding-bottom: var(--spacing-xs);
-                margin-bottom: var(--spacing-s);
-                border-bottom: 2px solid var(--accent-gold);
-            }
-            .agendamento {
-                border-left: 5px solid var(--dark-primary);
-                padding: var(--spacing-xs) var(--spacing-s);
-                font-size: 0.95rem;
-                margin: 0.5rem 0;
-                box-shadow: none;
-            }
-            .agendamento:hover {
-                transform: none;
-                box-shadow: none;
-            }
-            .divisor-horario {
-                margin: var(--spacing-m) 0;
-            }
-            .no-appointments {
-                color: #bbb;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda do Pai</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <header onclick="location.reload()">
-        <img src="https://lh3.googleusercontent.com/p/AF1QipNetH3T615EMUccxBB_tIjT_PD2okJM_qA5AX6E=s1360-w1360-h1020-rw" alt="Logo Magalhães Barbearia" crossorigin="anonymous">
-        <h1>Magalhães Barbearia</h1>
+
+  <!-- Tela de Login -->
+  <div id="login-screen" class="screen flex-center">
+    <form id="login-form" class="card">
+      <h2>Agenda Barbearia</h2>
+      <p class="subtitle">Acesse para ver os horários</p>
+      
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="login-email" required placeholder="seu@email.com">
+      </div>
+      
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="login-password" required placeholder="******">
+      </div>
+      
+      <button type="submit" id="btn-login" class="btn btn-primary">Entrar</button>
+    </form>
+  </div>
+
+  <!-- Tela Principal da Agenda -->
+  <div id="app-screen" class="screen hidden">
+    <!-- Topbar -->
+    <header class="header">
+      <h1>✂️ Agenda do Pai</h1>
+      <button id="btn-logout" class="btn-icon" title="Sair">🚪</button>
     </header>
 
-    <main>
-        <form id="form-agendamento">
-            <div class="message-container" id="message-container"></div>
+    <main class="container">
+      <!-- Seletor de Data -->
+      <div class="date-bar card flex-between">
+        <button id="btn-prev-day" class="btn-icon">◀</button>
+        <input type="date" id="selected-date">
+        <button id="btn-next-day" class="btn-icon">▶</button>
+      </div>
 
-            <label for="data">Data do agendamento:</label>
-            <input type="date" id="data" required />
-
-            <label for="horario">Horário:</label>
-            <input type="time" id="horario" required />
-
-            <label for="cliente">Nome do cliente:</label>
-            <input type="text" id="cliente" required />
-
-            <label for="servico">Serviço:</label>
-            <select id="servico" required>
-                <option value="">Selecione um serviço</option>
-                <option value="Cabelo degradê">Cabelo degradê</option>
-                <option value="Cabelo social">Cabelo social</option>
-                <option value="Cabelo feminino">Cabelo feminino</option>
-                <option value="Cabelo + barba">Cabelo + barba</option>
-                <option value="Barba">Barba</option>
-                <option value="Cabelo + luzes">Cabelo + luzes</option>
-            </select>
-
-            <input type="hidden" id="index-edicao" value="">
-            <button type="submit" class="btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-save"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                Salvar Agendamento
-            </button>
-        </form>
-
-        <div class="navegacao-semanal">
-            <button class="btn-secondary" onclick="mudarSemana(-1)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                Anterior
-            </button>
-            <span id="semana-atual"></span>
-            <button class="btn-secondary" onclick="mudarSemana(1)">
-                Próxima
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-            </button>
+      <!-- Métricas / Dashboard Diário -->
+      <div class="dashboard-grid">
+        <div class="card metric">
+          <span class="metric-label">Atendimentos</span>
+          <span id="metric-counts" class="metric-value">0 / 0</span>
         </div>
-
-        <div class="dias-container" id="dias"></div>
-
-        <div class="container-botoes">
-            <button class="btn-primary" onclick="gerarImagem()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                </svg>
-                Exportar Agenda (PNG)
-            </button>
+        <div class="card metric">
+          <span class="metric-label">Estimativa Hoje</span>
+          <span id="metric-revenue" class="metric-value green">R$ 0,00</span>
         </div>
+      </div>
+
+      <!-- Lista de Horários -->
+      <div class="schedule-section">
+        <div class="flex-between section-title">
+          <span>Horários do Dia</span>
+          <button id="btn-refresh" class="btn-link">🔄 Atualizar</button>
+        </div>
+        
+        <div id="appointments-list" class="appointments-list">
+          <!-- Inserido dinamicamente via JS -->
+        </div>
+      </div>
     </main>
 
-    <script>
-        let dataAtual = new Date(); // Stores the current week's starting date
+    <!-- Botão Flutuante (+) -->
+    <button id="btn-open-modal" class="fab">+</button>
 
-        // Utility function to display messages
-        function showMessage(message, type = 'info') { // type can be 'success', 'error', 'info'
-            const msgContainer = document.getElementById('message-container');
-            msgContainer.textContent = message;
-            msgContainer.className = `message-container ${type}`; // Add type class
-            msgContainer.style.display = 'block';
+    <!-- Modal de Novo Agendamento -->
+    <div id="modal" class="modal-backdrop hidden">
+      <div class="modal-content card">
+        <h2>Novo Agendamento</h2>
+        <form id="appointment-form">
+          <div class="field">
+            <label>Nome do Cliente</label>
+            <input type="text" id="cust-name" required placeholder="Ex: João Silva">
+          </div>
 
-            setTimeout(() => {
-                msgContainer.style.display = 'none';
-                msgContainer.className = 'message-container'; // Clear classes
-            }, 5000); // Hide after 5 seconds
-        }
+          <div class="field">
+            <label>Telefone (Opcional)</label>
+            <input type="tel" id="cust-phone" placeholder="(88) 99999-9999">
+          </div>
 
-        // Function to get the start of the week (Monday) for a given date
-        function getStartOfWeek(date) {
-            const d = new Date(date);
-            const day = d.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
-            // Calculate the difference to get to Monday (getDay() returns 0 for Sunday, we want it to be -6 relative to Mon)
-            const diff = d.getDate() - (day === 0 ? 6 : day - 1); // If Sunday (0), go back 6 days. Otherwise, go back (day - 1) days.
-            return new Date(d.getFullYear(), d.getMonth(), diff);
-        }
+          <div class="grid-2">
+            <div class="field">
+              <label>Serviço</label>
+              <input type="text" id="cust-service" required value="Corte Masculino">
+            </div>
+            <div class="field">
+              <label>Horário</label>
+              <input type="time" id="cust-time" required value="09:00">
+            </div>
+          </div>
 
-        // Function to format a date as "DD/MM"
-        function formatarDataCurta(date) {
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            return `${day}/${month}`;
-        }
+          <div class="field">
+            <label>Valor (R$)</label>
+            <input type="number" step="0.01" id="cust-price" required value="35.00">
+          </div>
 
-        // Function to format a date as "Dia da semana, DD/MM"
-        function formatarDataCompleta(date) {
-            const options = { weekday: 'long', day: '2-digit', month: '2-digit' };
-            const formatted = date.toLocaleDateString('pt-BR', options);
-            // Capitalize the first letter of the weekday
-            return formatted.charAt(0).toUpperCase() + formatted.slice(1);
-        }
+          <div class="grid-2 modal-actions">
+            <button type="button" id="btn-close-modal" class="btn btn-secondary">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-        function capitalize(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1);
-        }
-
-        function carregarAgendamentos() {
-            const diasContainer = document.getElementById('dias');
-            diasContainer.innerHTML = '';
-
-            const startOfWeek = getStartOfWeek(dataAtual);
-            const diasDaSemanaDisplay = [];
-
-            // Generate dates for Monday to Saturday
-            for (let i = 0; i < 6; i++) { // 0=Mon, 1=Tue, ..., 5=Sat
-                const currentDay = new Date(startOfWeek);
-                currentDay.setDate(startOfWeek.getDate() + i);
-                diasDaSemanaDisplay.push(currentDay);
-            }
-
-            // Set the text for the current week range
-            const endOfWeek = new Date(startOfWeek);
-            endOfWeek.setDate(startOfWeek.getDate() + 5); // Monday to Saturday
-            document.getElementById('semana-atual').textContent = `Semana de ${formatarDataCurta(startOfWeek)} a ${formatarDataCurta(endOfWeek)}`;
-
-            diasDaSemanaDisplay.forEach(date => {
-                const dataKey = date.toISOString().slice(0, 10); //YYYY-MM-DD for storage
-                let agendamentos = JSON.parse(localStorage.getItem(dataKey)) || [];
-                // Ensure `completed` property exists for all appointments
-                agendamentos = agendamentos.map(item => ({ ...item, completed: item.hasOwnProperty('completed') ? item.completed : false }));
-                agendamentos.sort((a, b) => a.horario.localeCompare(b.horario));
-                localStorage.setItem(dataKey, JSON.stringify(agendamentos)); // Save sorted back
-
-                const diaDiv = document.createElement('div');
-                diaDiv.className = 'dia';
-                diaDiv.innerHTML = `<h3>${formatarDataCompleta(date)}</h3>`;
-
-                const agendamentoListDiv = document.createElement('div');
-                agendamentoListDiv.className = 'agendamento-list';
-
-
-                let lastMorning = -1; // To insert the lunch break divisor
-
-                if (agendamentos.length === 0) {
-                    agendamentoListDiv.innerHTML += '<p class="no-appointments">Nenhum agendamento para este dia.</p>';
-                } else {
-                    agendamentos.forEach((item, index) => {
-                        // Check if it's time to insert the lunch break divisor
-                        if (item.horario >= "12:00" && lastMorning < 0) {
-                            agendamentoListDiv.innerHTML += '<div class="divisor-horario"></div>';
-                            lastMorning = 1; // Mark that lunch break has been inserted
-                        }
-
-                        const agendamentoDiv = document.createElement('div');
-                        agendamentoDiv.className = `agendamento ${item.completed ? 'completed' : ''}`;
-                        agendamentoDiv.innerHTML = `
-                            <div class="agendamento-details">
-                                ${item.completed ? '<span class="completion-mark">&#10003;</span>' : ''}
-                                <strong>${item.horario}</strong> - ${capitalize(item.cliente)} (${item.servico})
-                            </div>
-                            <div class="agendamento-buttons">
-                                <button class="btn-edit" onclick="editarAgendamento('${dataKey}', ${index})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                                </button>
-                                <button class="btn-remove" onclick="removerAgendamento('${dataKey}', ${index})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                </button>
-                                <button class="btn-complete" onclick="toggleConcluido('${dataKey}', ${index})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.5"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                </button>
-                            </div>
-                        `;
-                        agendamentoListDiv.appendChild(agendamentoDiv);
-                    });
-                }
-                diaDiv.appendChild(agendamentoListDiv);
-                diasContainer.appendChild(diaDiv);
-            });
-        }
-
-        function salvarAgendamento(event) {
-            event.preventDefault();
-            const dataInput = document.getElementById('data');
-            const horarioInput = document.getElementById('horario');
-            const clienteInput = document.getElementById('cliente');
-            const servicoInput = document.getElementById('servico');
-            const indexEdicaoInput = document.getElementById('index-edicao');
-
-            const data = dataInput.value;
-            const horario = horarioInput.value;
-            const cliente = clienteInput.value;
-            const servico = servicoInput.value;
-            const indexEdicao = indexEdicaoInput.value;
-
-            if (!data || !horario || !cliente || !servico) {
-                showMessage('Por favor, preencha todos os campos.', 'error');
-                return;
-            }
-
-            // Get existing appointments for the selected date
-            let agendamentosDoDia = JSON.parse(localStorage.getItem(data)) || [];
-
-            // Check for time conflicts, excluding the current appointment if editing
-            const isConflict = agendamentosDoDia.some((item, idx) =>
-                item.horario === horario && idx !== parseInt(indexEdicao)
-            );
-
-            if (isConflict) {
-                showMessage('Já existe um agendamento para este horário. Por favor, escolha outro horário.', 'error');
-                return;
-            }
-
-            const novoAgendamento = { data, horario, cliente, servico, completed: false };
-
-            if (indexEdicao !== "") {
-                // Editing an existing appointment
-                agendamentosDoDia[parseInt(indexEdicao)] = novoAgendamento;
-                showMessage('Agendamento atualizado com sucesso!', 'success');
-            } else {
-                // Adding a new appointment
-                agendamentosDoDia.push(novoAgendamento);
-                showMessage('Agendamento salvo com sucesso!', 'success');
-            }
-
-            // Save updated appointments back to localStorage
-            localStorage.setItem(data, JSON.stringify(agendamentosDoDia));
-
-            // Clear the form
-            dataInput.value = '';
-            horarioInput.value = '';
-            clienteInput.value = '';
-            servicoInput.value = '';
-            indexEdicaoInput.value = ''; // Clear edit index
-
-            carregarAgendamentos(); // Reload appointments to reflect changes
-        }
-
-        function editarAgendamento(dataKey, index) {
-            const agendamentosDoDia = JSON.parse(localStorage.getItem(dataKey)) || [];
-            const agendamentoParaEditar = agendamentosDoDia[index];
-
-            if (agendamentoParaEditar) {
-                document.getElementById('data').value = agendamentoParaEditar.data;
-                document.getElementById('horario').value = agendamentoParaEditar.horario;
-                document.getElementById('cliente').value = agendamentoParaEditar.cliente;
-                document.getElementById('servico').value = agendamentoParaEditar.servico;
-                document.getElementById('index-edicao').value = index; // Store index for editing
-                showMessage('Modifique os campos e clique em "Salvar Agendamento" para atualizar.', 'info');
-            }
-        }
-
-        function removerAgendamento(dataKey, index) {
-            if (confirm('Tem certeza que deseja remover este agendamento?')) {
-                let agendamentosDoDia = JSON.parse(localStorage.getItem(dataKey)) || [];
-                agendamentosDoDia.splice(index, 1); // Remove the appointment at the given index
-                localStorage.setItem(dataKey, JSON.stringify(agendamentosDoDia));
-                showMessage('Agendamento removido com sucesso!', 'success');
-                carregarAgendamentos(); // Reload appointments
-            }
-        }
-
-        function toggleConcluido(dataKey, index) {
-            let agendamentosDoDia = JSON.parse(localStorage.getItem(dataKey)) || [];
-            if (agendamentosDoDia[index]) {
-                agendamentosDoDia[index].completed = !agendamentosDoDia[index].completed;
-                localStorage.setItem(dataKey, JSON.stringify(agendamentosDoDia));
-                showMessage(`Agendamento marcado como ${agendamentosDoDia[index].completed ? 'concluído' : 'pendente'}.`, 'success');
-                carregarAgendamentos();
-            }
-        }
-
-        function mudarSemana(offset) {
-            const currentDay = dataAtual.getDay(); // 0 (Sunday) to 6 (Saturday)
-            const daysToMonday = currentDay === 0 ? 6 : currentDay - 1; // Days to subtract to get to Monday
-
-            // Calculate the current Monday
-            const currentMonday = new Date(dataAtual);
-            currentMonday.setDate(dataAtual.getDate() - daysToMonday);
-
-            // Add or subtract 7 days for the new week
-            currentMonday.setDate(currentMonday.getDate() + (offset * 7));
-            dataAtual = currentMonday; // Update dataAtual to the new week's Monday
-            carregarAgendamentos();
-        }
-
-        function gerarImagem() {
-            const mainElement = document.querySelector('main'); // Select the main content area
-
-            // Temporarily hide elements not needed in the image
-            const header = document.querySelector('header');
-            const form = document.getElementById('form-agendamento');
-            const nav = document.querySelector('.navegacao-semanal');
-            const buttonsContainer = document.querySelector('.container-botoes');
-            const messageContainer = document.getElementById('message-container');
-
-            header.style.display = 'none';
-            form.style.display = 'none';
-            nav.style.display = 'none';
-            buttonsContainer.style.display = 'none';
-            messageContainer.style.display = 'none';
-
-            // Adjust main padding for the image
-            mainElement.style.padding = '20px'; // Less padding for print/image
-
-            // Get the current scroll position
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-            // Scroll to top-left before capturing
-            window.scrollTo(0, 0);
-
-            domtoimage.toPng(mainElement)
-                .then(function (dataUrl) {
-                    const link = document.createElement('a');
-                    link.download = 'agenda-magalhaes-barbearia.png';
-                    link.href = dataUrl;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    showMessage('Agenda exportada como imagem (PNG) com sucesso!', 'success');
-                })
-                .catch(function (error) {
-                    console.error('oops, something went wrong!', error);
-                    showMessage('Erro ao exportar a agenda como imagem.', 'error');
-                })
-                .finally(() => {
-                    // Restore original styles and scroll position
-                    header.style.display = '';
-                    form.style.display = '';
-                    nav.style.display = '';
-                    buttonsContainer.style.display = '';
-                    messageContainer.style.display = '';
-                    mainElement.style.padding = ''; // Restore original padding
-                    window.scrollTo(scrollLeft, scrollTop); // Restore scroll position
-                });
-        }
-
-        // Event listener for form submission
-        document.getElementById('form-agendamento').addEventListener('submit', salvarAgendamento);
-
-        // Initial load of appointments when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            carregarAgendamentos();
-        });
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
